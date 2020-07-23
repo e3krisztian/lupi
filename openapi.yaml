@@ -1,0 +1,205 @@
+---
+openapi: 3.0.3
+
+servers:
+  - url: /v1.0
+
+info:
+  title: Lupi Game API
+  description: |
+    # Least Unique Positive Integer (Lupi)
+
+    Lupi is a fun game, that has been studied a lot and has some maths
+    behind how people behave and what really is optimal in some respect.
+
+    ## The Rules of the Game
+
+    - Lupi is a multiplayer game
+    - each player picks a positive integer
+    - the lowest unique integer wins
+
+  license:
+    name: Unlicense
+    url: https://unlicense.org/
+  version: 1.0.0
+
+tags:
+  - name: game
+    description: Playing the game
+  - name: stats
+    description: Game statistics
+
+paths:
+  /rounds:
+    get:
+      tags: [stats]
+      description: Get all known rounds
+      responses:
+        200:
+          description: List of all round ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+        
+    post:
+      tags: [game]
+      description: Creates a new game round
+      responses:
+        201:
+          description: A new game round was created
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  /votes:
+    post:
+      tags: [game]
+      description: Register a user vote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - round
+                - user
+                - vote
+              properties:
+                round:
+                  $ref: "#/components/schemas/round"
+                user:
+                  type: string
+                vote:
+                  $ref: "#/components/schemas/vote"
+      responses:
+        201:
+          description: |
+            Vote accepted
+        403:
+          description: |
+            Already voted or the round is already closed
+        404:
+          description: Round is not available
+
+  /rounds/{round}/is_completed:
+    parameters:
+      - $ref: "#/components/parameters/round"
+    put:
+      tags: [game]
+      description: Completes a round, calculates winner
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: boolean
+      responses:
+        204:
+          description: |
+            Either of
+            - game round was completed
+            - no change
+        400:
+          description: |
+            When value is false and the round is already completed.
+
+            Reopening a round is not supported because completed
+            rounds make information public which would allow one
+            to win - it is a possible cheating vector.
+        404:
+          description: Round is not available
+  
+  /rounds/current/id:
+    get:
+      tags: [game]
+      description: Return the current round id
+      responses:
+        200:
+          description: Current round id
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 12
+        404:
+          description: Never started a round yet
+
+  /round/{round}/results:
+    parameters:
+      - $ref: "#/components/parameters/round"
+    get:
+      tags: [stats, game]
+      description: Get round results
+      responses:
+        200:
+          description: results
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - is_completed
+                properties:
+                  is_completed:
+                    type: boolean
+                  winner:
+                    type: string
+                    example: winning-user
+                  vote:
+                    $ref: "#/components/schemas/vote"
+        404:
+          description: Round is not available
+
+  /rounds/{round}:
+    parameters:
+      - $ref: "#/components/parameters/round"
+    get:
+      tags: [stats]
+      description: Get round details
+      responses:
+        200:
+          description: Details of round
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - start_date
+                  - is_completed
+                properties:
+                  start_date:
+                    type: string
+                    format: date-time
+                  end_date:
+                    type: string
+                    format: date-time
+                  is_completed:
+                    type: boolean
+                  players:
+                    type: integer
+                    minimum: 0
+        404:
+          description: Round is not available
+
+components:
+  parameters:
+    round:
+      name: round
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/round"
+  schemas:
+    round:
+      oneOf:
+        - type: integer
+        - type: string
+          enum: [current]
+      default: current
+    vote:
+      type: integer
+      minimum: 1
+      example: 2
