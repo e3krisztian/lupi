@@ -77,11 +77,9 @@ paths:
                   $ref: "#/components/schemas/vote"
       responses:
         201:
-          description: |
-            Vote accepted
+          description: Vote accepted
         403:
-          description: |
-            Already voted or the round is already closed
+          description: Already voted or the round is already closed
         404:
           description: Round is not available
 
