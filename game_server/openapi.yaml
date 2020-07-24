@@ -34,6 +34,7 @@ paths:
     get:
       tags: [stats]
       description: Get all known rounds
+      operationId: lupi.api.get_rounds
       responses:
         200:
           description: List of all round ids
@@ -43,10 +44,11 @@ paths:
                 type: array
                 items:
                   type: integer
-        
+
     post:
       tags: [game]
       description: Creates a new game round
+      operationId: lupi.api.create_round
       responses:
         201:
           description: A new game round was created
@@ -59,6 +61,7 @@ paths:
     post:
       tags: [game]
       description: Register a user vote
+      operationId: lupi.api.add_vote
       requestBody:
         content:
           application/json:
@@ -89,6 +92,7 @@ paths:
     put:
       tags: [game]
       description: Completes a round, calculates winner
+      operationId: lupi.api.set_round_is_completed
       requestBody:
         content:
           application/json:
@@ -109,11 +113,12 @@ paths:
             to win - it is a possible cheating vector.
         404:
           description: Round is not available
-  
+
   /rounds/current/id:
     get:
       tags: [game]
       description: Return the current round id
+      operationId: lupi.api.get_current_round_id
       responses:
         200:
           description: Current round id
@@ -125,12 +130,13 @@ paths:
         404:
           description: Never started a round yet
 
-  /round/{round}/results:
+  /rounds/{round}/result:
     parameters:
       - $ref: "#/components/parameters/round"
     get:
       tags: [stats, game]
-      description: Get round results
+      description: Get round result
+      operationId: lupi.api.get_round_result
       responses:
         200:
           description: results
@@ -157,6 +163,7 @@ paths:
     get:
       tags: [stats]
       description: Get round details
+      operationId: lupi.api.get_round
       responses:
         200:
           description: Details of round
