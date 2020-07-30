@@ -29,7 +29,7 @@ Focus is on the API that enables this game service and only provide a very basic
 - Within an active round:
   - A user can add their number with a name as part of the game. The name is unique and cannot be reused in the round.
   - All users vote is collected.
-- Compete the Round, *return roundID*
+- Complete the Round, return round_id
 - Round Results: winner, and the number
 - Listing all rounds with IDs and start date, end date, number of participants
 - Querying the results of any rounds including the most recent one: winner and winning number

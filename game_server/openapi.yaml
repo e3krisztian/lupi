@@ -2,7 +2,7 @@
 openapi: 3.0.3
 
 servers:
-  - url: /v1.0
+  - url: /v1
 
 info:
   title: Lupi Game API
@@ -79,7 +79,7 @@ paths:
                 vote:
                   $ref: "#/components/schemas/vote"
       responses:
-        201:
+        200:
           description: Vote accepted
         403:
           description: Already voted or the round is already closed
@@ -155,7 +155,7 @@ paths:
                   vote:
                     $ref: "#/components/schemas/vote"
         404:
-          description: Round is not available
+          description: Round/its result is not available
 
   /rounds/{round}:
     parameters:
@@ -199,10 +199,8 @@ components:
         $ref: "#/components/schemas/round"
   schemas:
     round:
-      oneOf:
-        - type: integer
-        - type: string
-          enum: [current]
+      type: string
+      pattern: "^current|\\d+$"
       default: current
     vote:
       type: integer
