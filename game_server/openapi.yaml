@@ -56,6 +56,8 @@ paths:
             application/json:
               schema:
                 type: integer
+        409:  # conflict
+          description: An active game round already exists
 
   /votes:
     post:
@@ -81,7 +83,7 @@ paths:
       responses:
         200:
           description: Vote accepted
-        403:
+        409:  # conflict
           description: Already voted or the round is already closed
         404:
           description: Round is not available
@@ -104,7 +106,7 @@ paths:
             Either of
             - game round was completed
             - no change
-        400:
+        409:  # conflict
           description: |
             When value is false and the round is already completed.
 

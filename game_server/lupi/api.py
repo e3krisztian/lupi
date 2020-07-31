@@ -2,18 +2,24 @@
 
 from http import HTTPStatus
 
-from flask import request, url_for
+from flask import request
+import flask
+from . import data as game
 
 
 def get_rounds():
     """ GET /v1/rounds """
+    # TODO: GET /v1/rounds
     return [1, 2]
 
 
 def create_round():
     """ POST /v1/rounds """
-    round_id = 1
-    return round_id, HTTPStatus.CREATED, {'Location': f'/v1/rounds/{round_id}'}
+    try:
+        round = game.make_round()
+        return round.id, HTTPStatus.CREATED, {'Location': f'/v1/rounds/{round.id}'}
+    except game.Error:
+        return None, HTTPStatus.CONFLICT
 
 
 def add_vote():
@@ -26,7 +32,21 @@ def add_vote():
 
 def set_round_is_completed(round):
     """ PUT /v1/rounds/{round}/is_completed """
-    print(repr(round))
+    requested_round = game.get_round(round)
+    if requested_round is None:
+        return None, HTTPStatus.NOT_FOUND
+    do_complete = request.json
+
+    if requested_round.is_completed and not do_complete:
+        return None, HTTPStatus.CONFLICT
+    if do_complete and not requested_round.is_completed:
+        # according to game rules, there can be only one
+        # active round, however the current implementation
+        # potentially allows for multiple active rounds (race condition)
+        # this is ignored at this point (server error due to assertion).
+        assert requested_round.id == game.get_current_round_id()
+
+        game.complete_round()
 
 
 def get_current_round_id():

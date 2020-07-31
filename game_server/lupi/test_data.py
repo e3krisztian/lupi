@@ -1,93 +1,106 @@
 from datetime import datetime
 import pytest
 
-from .data import GameData
+from . import data as game
 from .model import Round
 
 
-def test_make_round_fails_when_there_is_an_active_round(db):
-    gd = GameData()
-    gd.make_round()
+class Test_get_round:
+    def test_no_current_round(self, db):
+        assert game.get_round("current") is None
 
-    with pytest.raises(GameData.Error):
-        gd.make_round()
+    def test_no_round_with_id(self, db):
+        assert game.get_round("1") is None
+
+    def test_current(self, db):
+        round = game.make_round()
+        assert game.get_round("current") == round
+
+    def test_with_id(self, db):
+        round = game.make_round()
+        assert game.get_round(round.id) == round
+        assert game.get_round(str(round.id)) == round
+
+    def test_completed_with_id(self, db):
+        round = game.make_round()
+        game.complete_round()
+        assert game.get_round(round.id) == round
+        assert game.get_round(str(round.id)) == round
+
+
+def test_make_round_fails_when_there_is_an_active_round(db):
+    game.make_round()
+    with pytest.raises(game.Error):
+        game.make_round()
 
 
 def test_make_round_round_ids_autoincrement(db):
-    gd = GameData()
 
-    r1 = gd.make_round()
-    gd.complete_round()
+    r1 = game.make_round()
+    game.complete_round()
 
-    r2 = gd.make_round()
-    gd.complete_round()
+    r2 = game.make_round()
+    game.complete_round()
 
-    r3 = gd.make_round()
-    gd.complete_round()
+    r3 = game.make_round()
+    game.complete_round()
 
     assert r1.id < r2.id < r3.id  # id autoincrement
 
 
 def test_get_current_round_id(db):
-    gd = GameData()
-    round = gd.make_round()
-    assert round.id == gd.get_current_round_id()
+    round = game.make_round()
+    assert round.id == game.get_current_round_id()
 
 
 def test_get_current_round_id_no_rounds_at_all(db):
     with pytest.raises(LookupError):
-        GameData().get_current_round_id()
+        game.get_current_round_id()
 
 
 def test_get_current_round_id_when_there_are_no_active_rounds(db):
-    gd = GameData()
-    round = gd.make_round()
-    gd.complete_round()
+    round = game.make_round()
+    game.complete_round()
 
     with pytest.raises(LookupError):
-        GameData().get_current_round_id()
+        game.get_current_round_id()
 
 
 def test_complete_round(db):
-    gd = GameData()
-    r = gd.make_round()
+    r = game.make_round()
     assert not r.is_completed
 
-    gd.complete_round()
+    game.complete_round()
 
     assert r.is_completed
 
 
 def test_complete_round_sets_end_date(db):
-    gd = GameData()
-    r = gd.make_round()
+    r = game.make_round()
     assert not r.is_completed
 
-    gd.complete_round()
+    game.complete_round()
 
     assert r.end_date != None
 
 
 def test_add_votes(db):
-    gd = GameData()
-    gd.make_round()
-    gd.add_vote('name1', 1)
-    gd.add_vote('name2', 1)
-    gd.add_vote('name3', 2)
+    game.make_round()
+    game.add_vote('name1', 1)
+    game.add_vote('name2', 1)
+    game.add_vote('name3', 2)
 
 
 def test_add_vote_no_current_round(db):
-    gd = GameData()
-    with pytest.raises(GameData.Error):
-        gd.add_vote('name', 1)
+    with pytest.raises(game.Error):
+        game.add_vote('name', 1)
 
 
 def test_add_vote_duplicate_name(db):
-    gd = GameData()
-    gd.make_round()
-    gd.add_vote('name', 1)
-    with pytest.raises(GameData.Error):
-        gd.add_vote('name', 2)
+    game.make_round()
+    game.add_vote('name', 1)
+    with pytest.raises(game.Error):
+        game.add_vote('name', 2)
 
 
 def test_get_current_round_id_when_there_are_multiple_active_is_selected_by_id(db):
@@ -101,7 +114,7 @@ def test_get_current_round_id_when_there_are_multiple_active_is_selected_by_id(d
     r1 = _make_round_directly(db)
     _make_round_directly(db)
 
-    assert GameData().get_current_round_id() == r1.id
+    assert game.get_current_round_id() == r1.id
 
 
 def test_complete_round_works_only_on_current_round(db):
@@ -110,11 +123,10 @@ def test_complete_round_works_only_on_current_round(db):
     _make_round_directly(db)
     _make_round_directly(db)
 
-    gd = GameData()
-    gd.complete_round()
+    game.complete_round()
 
     with pytest.raises(LookupError):
-        gd.get_current_round_id()
+        game.get_current_round_id()
 
 
 def test_complete_round_closes_all_other_open_rounds(db):
@@ -123,11 +135,10 @@ def test_complete_round_closes_all_other_open_rounds(db):
     _make_round_directly(db)
     _make_round_directly(db)
 
-    gd = GameData()
-    gd.complete_round()
+    game.complete_round()
 
     with pytest.raises(LookupError):
-        gd.get_current_round_id()
+        game.get_current_round_id()
 
 
 def _make_round_directly(db):
