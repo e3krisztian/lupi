@@ -4,7 +4,7 @@ from http import HTTPStatus
 import pytest
 
 from .model import db, Round, Vote
-from . import data as game
+from . import game
 
 
 class Test_v1_rounds:

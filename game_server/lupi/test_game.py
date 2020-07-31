@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
 
-from . import data as game
+from . import game
 from .model import Round
 
 

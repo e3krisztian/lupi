@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from flask import request
 import flask
-from . import data as game
+from . import game
 
 
 def get_rounds():
