@@ -147,7 +147,7 @@ paths:
                 type: integer
                 example: 12
         404:
-          description: Never started a round yet
+          description: Not started a round yet
 
   /rounds/{round}/result:
     parameters:

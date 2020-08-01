@@ -243,9 +243,20 @@ class Test_v1_rounds_roundid_is_completed:
         assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
-def test_get_v1_rounds_current_id(client):
-    rv = client.get('/v1/rounds/current/id')
-    assert rv.status_code == HTTPStatus.OK
+class Test_get_v1_rounds_current_id:
+
+    def test_happy_path(self, client):
+        round = game.make_round()
+
+        rv = client.get('/v1/rounds/current/id')
+
+        assert rv.status_code == HTTPStatus.OK
+        assert rv.json == round.id
+
+    def test_no_current_round(self, client):
+        rv = client.get('/v1/rounds/current/id')
+
+        assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
 def test_get_v1_rounds_current_result(client):

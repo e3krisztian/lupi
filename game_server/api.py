@@ -65,7 +65,10 @@ def complete_round(round):
 
 def get_current_round_id():
     """ GET /v1/rounds/current/id """
-    return 1
+    try:
+        return game.get_current_round_id()
+    except LookupError:
+        return None, HTTPStatus.NOT_FOUND
 
 
 def get_round_result(round):
