@@ -10,7 +10,7 @@ def create_app(db_uri, testing=False):
         # specification_dir=openapi_path,
         # options={"swagger_ui": False, "serve_spec": False},
     )
-    connexion_app.add_api("../openapi.yaml", strict_validation=True, validate_responses=True)
+    connexion_app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
     flask_app = connexion_app.app
     # flask_app.json_encoder = encoder.JSONEncoder
 
