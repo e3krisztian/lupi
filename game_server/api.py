@@ -11,7 +11,7 @@ from . import stats
 def get_rounds(before=None, limit=25):
     """ GET /v1/rounds?before=id&limit=max-items """
     rounds = stats.get_rounds(before, limit)
-    output = {
+    result = {
         'data': [
             dict(
                 id=round.id,
@@ -23,8 +23,8 @@ def get_rounds(before=None, limit=25):
         ]
     }
     if len(rounds) == limit:
-        output['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
-    return output, HTTPStatus.OK
+        result['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
+    return result, HTTPStatus.OK
 
 
 def create_round():
