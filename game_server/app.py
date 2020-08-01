@@ -16,7 +16,8 @@ def create_app(db_uri, testing=False):
 
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    flask_app.config['TESTING'] = True
+    flask_app.config['TESTING'] = testing
+    # print(flask_app.config)
     model.db.init_app(flask_app)
     return flask_app
 
@@ -28,8 +29,8 @@ def create_db(app):
 
 if __name__ == '__main__':
     # TODO: remove test code
-    app = create_app('sqlite:///x.sqlite')
-    create_db(app)
+    # app = create_app('sqlite:///x.sqlite')
+    # create_db(app)
     app = create_app('sqlite:///:memory:')
     create_db(app)
-    app.run(host='127.0.0.1', port='5000', debug=True)
+    app.run(host='127.0.0.1', port='5000', debug=False)
