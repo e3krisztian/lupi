@@ -49,7 +49,7 @@ paths:
           example: 25
       tags: [stats]
       description: List completed rounds, most recent first, paged
-      operationId: lupi.api.get_rounds
+      operationId: game_server.api.get_rounds
       responses:
         200:
           description: |
@@ -64,7 +64,7 @@ paths:
     post:
       tags: [game]
       description: Creates a new game round
-      operationId: lupi.api.create_round
+      operationId: game_server.api.create_round
       responses:
         201:
           description: A new game round was created
@@ -79,7 +79,7 @@ paths:
     post:
       tags: [game]
       description: Register a user vote
-      operationId: lupi.api.add_vote
+      operationId: game_server.api.add_vote
       requestBody:
         content:
           application/json:
@@ -110,7 +110,7 @@ paths:
     put:
       tags: [game]
       description: Completes a round, calculates winner
-      operationId: lupi.api.set_round_is_completed
+      operationId: game_server.api.set_round_is_completed
       requestBody:
         content:
           application/json:
@@ -136,7 +136,7 @@ paths:
     get:
       tags: [game]
       description: Return the current round id
-      operationId: lupi.api.get_current_round_id
+      operationId: game_server.api.get_current_round_id
       responses:
         200:
           description: Current round id
@@ -154,7 +154,7 @@ paths:
     get:
       tags: [stats, game]
       description: Get round result
-      operationId: lupi.api.get_round_result
+      operationId: game_server.api.get_round_result
       responses:
         200:
           description: results
@@ -181,7 +181,7 @@ paths:
     get:
       tags: [stats]
       description: Get round details
-      operationId: lupi.api.get_round
+      operationId: game_server.api.get_round
       responses:
         200:
           description: Details of round
