@@ -5,12 +5,26 @@ from http import HTTPStatus
 from flask import request
 import flask
 from . import game
+from . import stats
 
 
-def get_rounds():
-    """ GET /v1/rounds """
-    # TODO: GET /v1/rounds
-    return [1, 2]
+def get_rounds(before=None, limit=25):
+    """ GET /v1/rounds?before=id&limit=max-items """
+    rounds = stats.get_rounds(before, limit)
+    output = {
+        'data': [
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                end_date=round.end_date,
+                players=len(round.votes)
+            )
+            for round in rounds
+        ]
+    }
+    if len(rounds) == limit:
+        output['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
+    return output, HTTPStatus.OK
 
 
 def create_round():
@@ -68,6 +82,7 @@ def get_round(round):
     """ GET /v1/rounds/{round} """
     print(repr(round))
     return dict(
+        id=1,
         start_date='2020-07-30T17:40:40.123123Z',
         end_date='2020-07-30T17:45:40.123123Z',
         is_completed=True,

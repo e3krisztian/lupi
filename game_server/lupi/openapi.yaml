@@ -39,6 +39,14 @@ paths:
           schema:
             type: integer
           example: 4
+        - name: limit
+          in: query
+          description: "(Paging) Return at most this many rounds at once"
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          example: 25
       tags: [stats]
       description: List completed rounds, most recent first, paged
       operationId: lupi.api.get_rounds

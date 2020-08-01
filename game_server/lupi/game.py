@@ -1,5 +1,5 @@
 """
-Game data.
+Current game.
 
 Caveat: this implementation potentially leads to data anomalies
 due to concurrent usage.

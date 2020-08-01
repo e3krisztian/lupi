@@ -1,21 +1,141 @@
 # test endpoints via openapi.yaml
 
+from datetime import date, datetime, timedelta, timezone
 from http import HTTPStatus
+
+from dateutil.parser import isoparse
 import pytest
 
 from .model import db, Round, Vote
 from . import game
 
 
-class Test_v1_rounds:
+EPOCH = datetime(1970, 1, 1, 0, 1, 2, 3, tzinfo=timezone.utc)
+
+
+def _start_date(n):
+    return EPOCH + timedelta(hours=2 * n)
+
+
+def _end_date(n):
+    return EPOCH + timedelta(hours=2 * n + 1)
+
+
+def _make_completed_round(n, votes=()):
+    round = Round(start_date=_start_date(n), end_date=_end_date(n))
+    round.votes = [Vote(name=name, number=number) for name, number in votes]
+    db.session.add(round)
+    db.session.commit()
+    assert round.is_completed
+    return round
+
+
+class Test_get_v1_rounds:
     URL = '/v1/rounds'
 
-    def test_get(self, client):
+    def test_no_rounds(self, client):
         rv = client.get(self.URL)
         assert rv.status_code == HTTPStatus.OK
-        assert rv.json == [1, 2]
+        assert rv.json == {'data': []}
 
-    def test_post_creates_current_round(self, client):
+    def test_result_is_desc_by_time(self, client):
+        r1 = _make_completed_round(1)
+        r2 = _make_completed_round(2)
+        r3 = _make_completed_round(3)
+
+        rv = client.get(self.URL)
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r3.id, r2.id, r1.id]
+
+    def test_not_completed_round_not_listed(self, client):
+        r1 = _make_completed_round(1)
+        game.make_round()
+
+        rv = client.get(self.URL)
+
+        assert rv.status_code == HTTPStatus.OK
+        assert len(rv.json['data']) == 1
+        assert rv.json['data'][0]['id'] == r1.id
+
+    def test_data(self, client):
+        r1 = _make_completed_round(1, [('a', 1), ('b', 2)])
+        r2 = _make_completed_round(2)
+
+        rv = client.get(self.URL)
+
+        assert rv.status_code == HTTPStatus.OK
+        data = rv.json
+        assert len(data['data']) == 2
+
+        rr0 = data['data'][0]
+        assert rr0['id'] == r2.id
+        assert datetime_eq(rr0['start_date'], _start_date(2))
+        assert datetime_eq(rr0['end_date'], _end_date(2))
+        assert rr0['players'] == 0
+
+        rr1 = data['data'][1]
+        assert rr1['id'] == r1.id
+        assert datetime_eq(rr1['start_date'], _start_date(1))
+        assert datetime_eq(rr1['end_date'], _end_date(1))
+        assert rr1['players'] == 2  # [('a', 1), ('b', 2)]
+
+    def test_paging_before(self, client):
+        r1 = _make_completed_round(1)
+        r2 = _make_completed_round(2)
+        r3 = _make_completed_round(3)
+
+        rv = client.get(self.URL, query_string={'before': r3.id + 1})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r3.id, r2.id, r1.id]
+
+        rv = client.get(self.URL, query_string={'before': r3.id})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r2.id, r1.id]
+
+        rv = client.get(self.URL, query_string={'before': r2.id})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r1.id]
+
+        rv = client.get(self.URL, query_string={'before': r1.id})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == []
+
+    def test_paging_limit(self, client):
+        r1 = _make_completed_round(1)
+        r2 = _make_completed_round(2)
+        r3 = _make_completed_round(3)
+
+        rv = client.get(self.URL, query_string={'limit': 2})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r3.id, r2.id]
+
+    def test_paging_previous(self, client):
+        r1 = _make_completed_round(1)
+        r2 = _make_completed_round(2)
+        r3 = _make_completed_round(3)
+
+        rv = client.get(self.URL, query_string={'limit': 1})
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r3.id]
+
+        rv = client.get(rv.json['previous'])
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r2.id]
+
+        rv = client.get(rv.json['previous'])
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == [r1.id]
+
+        rv = client.get(rv.json['previous'])
+        assert rv.status_code == HTTPStatus.OK
+        assert [r['id'] for r in rv.json['data']] == []
+        assert 'previous' not in rv.json
+
+
+class Test_post_v1_rounds:
+    URL = '/v1/rounds'
+
+    def test_creates_current_round(self, client):
         rv = client.post(self.URL)
 
         assert rv.status_code == HTTPStatus.CREATED
@@ -26,7 +146,7 @@ class Test_v1_rounds:
         round = db.session.query(Round).get(round_id)
         assert round
 
-    def test_post_existing_round_returns_conflict(self, client):
+    def test_existing_round_returns_conflict(self, client):
         game.make_round()
         rv = client.post(self.URL)
         assert rv.status_code == HTTPStatus.CONFLICT
@@ -89,7 +209,6 @@ class Test_v1_rounds_roundid_is_completed:
         assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
-
 def test_get_v1_rounds_current_id(client):
     rv = client.get('/v1/rounds/current/id')
     assert rv.status_code == HTTPStatus.OK
@@ -113,3 +232,12 @@ def test_get_v1_rounds_current(client):
 def test_get_v1_rounds_1(client):
     rv = client.get('/v1/rounds/1')
     assert rv.status_code == HTTPStatus.OK
+
+
+def datetime_eq(datetime1, datetime2):
+    def _as_datetime(datetimeish):
+        assert isinstance(datetimeish, (datetime, str))
+        if isinstance(datetimeish, str):
+            return isoparse(datetimeish)
+        return datetimeish
+    return _as_datetime(datetime1) == _as_datetime(datetime2)
