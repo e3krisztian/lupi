@@ -32,18 +32,26 @@ tags:
 paths:
   /rounds:
     get:
+      parameters:
+        - name: before
+          in: query
+          description: "(Paging) Return rounds before this round id"
+          schema:
+            type: integer
+          example: 4
       tags: [stats]
-      description: Get all known rounds
+      description: List completed rounds, most recent first, paged
       operationId: lupi.api.get_rounds
       responses:
         200:
-          description: List of all round ids
+          description: |
+            Limited list of rounds
+            - round data (IDs and start date, end date, number of participants)
+            - and paging link
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: integer
+                $ref: "#/components/schemas/rounds_response"
 
     post:
       tags: [game]
@@ -172,22 +180,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - start_date
-                  - is_completed
-                properties:
-                  start_date:
-                    type: string
-                    format: date-time
-                  end_date:
-                    type: string
-                    format: date-time
-                  is_completed:
-                    type: boolean
-                  players:
-                    type: integer
-                    minimum: 0
+                $ref: "#/components/schemas/stat_round"
         404:
           description: Round is not available
 
@@ -199,6 +192,7 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/round"
+
   schemas:
     round:
       type: string
@@ -208,3 +202,43 @@ components:
       type: integer
       minimum: 1
       example: 2
+
+    stat_round:
+      # IDs and start date, end date, players (=number of participants)
+      type: object
+      required:
+        - id
+        - start_date
+      properties:
+        id:
+          type: integer
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        players:
+          type: integer
+          minimum: 0
+
+    rounds_response:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/stat_round"
+              - type: object
+                required:
+                  # make all properties required
+                  - id
+                  - start_date
+                  - end_date
+                  - players
+        previous:
+          type: string
+          example: /v1/rounds?before=4
