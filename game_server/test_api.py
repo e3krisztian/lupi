@@ -159,13 +159,36 @@ class Test_post_v1_votes:
 
     def test_creates_vote(self, client):
         round = game.make_round()
-
         vote = dict(round=str(round.id), name='voter', number=2)
+
         rv = client.post(self.URL, json=vote)
+
         assert rv.status_code == HTTPStatus.OK
         assert len(round.votes) == 1
         assert round.votes[0].name == 'voter'
         assert round.votes[0].number == 2
+
+    def test_voting_on_nonexisting_round(self, client):
+        vote = dict(round="1", name='voter', number=2)
+        rv = client.post(self.URL, json=vote)
+        assert rv.status_code == HTTPStatus.NOT_FOUND
+
+    def test_voting_on_completed_round(self, client):
+        round = _make_completed_round(1)
+
+        vote = dict(round=f"{round.id}", name='voter', number=2)
+        rv = client.post(self.URL, json=vote)
+        assert rv.status_code == HTTPStatus.CONFLICT
+
+    def test_duplicate_vote(self, client):
+        round = game.make_round()
+        vote = dict(round=str(round.id), name='voter', number=2)
+
+        rv = client.post(self.URL, json=vote)
+        assert rv.status_code == HTTPStatus.OK
+
+        rv = client.post(self.URL, json=vote)
+        assert rv.status_code == HTTPStatus.CONFLICT
 
 
 @pytest.fixture

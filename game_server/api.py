@@ -39,10 +39,15 @@ def create_round():
 def add_vote():
     """ POST /v1/votes """
     round = game.get_round(request.json['round'])
+    if round is None:
+        return None, HTTPStatus.NOT_FOUND
     name = request.json['name']
     number = request.json['number']
-    game.add_vote(round, name, number)
-    return None, HTTPStatus.OK
+    try:
+        game.add_vote(round, name, number)
+        return None, HTTPStatus.OK
+    except game.Error:
+        return None, HTTPStatus.CONFLICT
 
 
 def complete_round(round):
