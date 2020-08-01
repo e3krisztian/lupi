@@ -46,8 +46,9 @@ def make_round() -> Round:
     return round
 
 
-def complete_round():
-    round = _get_current_round()
+def complete_round(round):
+    if round != _get_current_round():
+        raise Error('round is not the currently active one')
     if round is not None:
         round.end_date = datetime.utcnow()
 
@@ -56,8 +57,9 @@ def complete_round():
         round.end_date = round.start_date
 
 
-def add_vote(name, number):
-    round = _get_current_round()
+def add_vote(round, name, number):
+    if round != _get_current_round():
+        raise Error('round is not the currently active one')
     if round is None:
         raise Error("No current round")
     round.votes.append(Vote(name=name, number=number))

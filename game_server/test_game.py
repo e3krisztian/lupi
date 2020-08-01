@@ -23,7 +23,7 @@ class Test_get_round:
 
     def test_completed_with_id(self, db):
         round = game.make_round()
-        game.complete_round()
+        game.complete_round(round)
         assert game.get_round(round.id) == round
         assert game.get_round(str(round.id)) == round
 
@@ -38,13 +38,13 @@ class Test_make_round:
     def test_round_ids_autoincrement(self, db):
 
         r1 = game.make_round()
-        game.complete_round()
+        game.complete_round(r1)
 
         r2 = game.make_round()
-        game.complete_round()
+        game.complete_round(r2)
 
         r3 = game.make_round()
-        game.complete_round()
+        game.complete_round(r3)
 
         assert r1.id < r2.id < r3.id  # id autoincrement
 
@@ -61,7 +61,7 @@ class Test_get_current_round_id:
 
     def test_when_there_are_no_active_rounds(self, db):
         round = game.make_round()
-        game.complete_round()
+        game.complete_round(round)
 
         with pytest.raises(LookupError):
             game.get_current_round_id()
@@ -73,7 +73,7 @@ class Test_complete_round:
         r = game.make_round()
         assert not r.is_completed
 
-        game.complete_round()
+        game.complete_round(r)
 
         assert r.is_completed
 
@@ -81,7 +81,7 @@ class Test_complete_round:
         r = game.make_round()
         assert not r.is_completed
 
-        game.complete_round()
+        game.complete_round(r)
 
         assert r.end_date != None
 
@@ -89,20 +89,20 @@ class Test_complete_round:
 class Test_add_vote:
 
     def test_happy_path(self, db):
-        game.make_round()
-        game.add_vote('name1', 1)
-        game.add_vote('name2', 1)
-        game.add_vote('name3', 2)
+        round = game.make_round()
+        game.add_vote(round, 'name1', 1)
+        game.add_vote(round, 'name2', 1)
+        game.add_vote(round, 'name3', 2)
 
     def test_no_current_round(self, db):
         with pytest.raises(game.Error):
-            game.add_vote('name', 1)
+            game.add_vote(None, 'name', 1)
 
     def test_duplicate_name(self, db):
-        game.make_round()
-        game.add_vote('name', 1)
+        round = game.make_round()
+        game.add_vote(round, 'name', 1)
         with pytest.raises(game.Error):
-            game.add_vote('name', 2)
+            game.add_vote(round, 'name', 2)
 
 
 class Test_data_anomaly:
@@ -123,10 +123,10 @@ class Test_data_anomaly:
 
     def test_complete_round(self, db):
         """Close all other open rounds as well."""
-        _make_round_directly(db)
+        r = _make_round_directly(db)
         _make_round_directly(db)
 
-        game.complete_round()
+        game.complete_round(r)
 
         with pytest.raises(LookupError):
             game.get_current_round_id()

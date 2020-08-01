@@ -81,20 +81,21 @@ paths:
       description: Register a user vote
       operationId: game_server.api.add_vote
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               required:
                 - round
-                - user
-                - vote
+                - name
+                - number
               properties:
                 round:
                   $ref: "#/components/schemas/round"
-                user:
+                name:
                   type: string
-                vote:
+                number:
                   $ref: "#/components/schemas/vote"
       responses:
         200:
@@ -110,7 +111,7 @@ paths:
     put:
       tags: [game]
       description: Completes a round, calculates winner
-      operationId: game_server.api.set_round_is_completed
+      operationId: game_server.api.complete_round
       requestBody:
         content:
           application/json:
@@ -206,6 +207,7 @@ components:
       type: string
       pattern: "^current|\\d+$"
       default: current
+
     vote:
       type: integer
       minimum: 1

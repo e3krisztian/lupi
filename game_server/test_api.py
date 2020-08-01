@@ -39,6 +39,7 @@ class Test_get_v1_rounds:
         assert rv.json == {'data': []}
 
     def test_result_is_desc_by_time(self, client):
+        # FIXME: this should be a unit test for stats.get_rounds
         r1 = _make_completed_round(1)
         r2 = _make_completed_round(2)
         r3 = _make_completed_round(3)
@@ -48,6 +49,7 @@ class Test_get_v1_rounds:
         assert [r['id'] for r in rv.json['data']] == [r3.id, r2.id, r1.id]
 
     def test_not_completed_round_not_listed(self, client):
+        # FIXME: this should be a unit test for stats.get_rounds
         r1 = _make_completed_round(1)
         game.make_round()
 
@@ -152,9 +154,18 @@ class Test_post_v1_rounds:
         assert rv.status_code == HTTPStatus.CONFLICT
 
 
-def test_post_v1_votes(client):
-    rv = client.post('/v1/votes', json=dict(round="2", user='voter', vote=2))
-    assert rv.status_code == HTTPStatus.OK
+class Test_post_v1_votes:
+    URL = '/v1/votes'
+
+    def test_creates_vote(self, client):
+        round = game.make_round()
+
+        vote = dict(round=str(round.id), name='voter', number=2)
+        rv = client.post(self.URL, json=vote)
+        assert rv.status_code == HTTPStatus.OK
+        assert len(round.votes) == 1
+        assert round.votes[0].name == 'voter'
+        assert round.votes[0].number == 2
 
 
 @pytest.fixture
@@ -190,14 +201,14 @@ class Test_v1_rounds_roundid_is_completed:
         assert game.get_current_round_id() == 1
 
     def test_put_False_fails_on_completed_round(self, client, round_id_1):
-        game.complete_round()
+        game.complete_round(game.get_round(round_id_1))
 
         rv = client.put(self.url(round_id_1), json=False)
 
         assert rv.status_code == HTTPStatus.CONFLICT
 
     def test_put_True_on_non_active_round(self, client, round_id_1):
-        game.complete_round()
+        game.complete_round(game.get_round(round_id_1))
 
         rv = client.put(self.url(round_id_1), json=True)
 

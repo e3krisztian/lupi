@@ -38,13 +38,14 @@ def create_round():
 
 def add_vote():
     """ POST /v1/votes """
-    assert 'user' in request.json
-    assert 'vote' in request.json
-    assert 'round' in request.json
+    round = game.get_round(request.json['round'])
+    name = request.json['name']
+    number = request.json['number']
+    game.add_vote(round, name, number)
     return None, HTTPStatus.OK
 
 
-def set_round_is_completed(round):
+def complete_round(round):
     """ PUT /v1/rounds/{round}/is_completed """
     requested_round = game.get_round(round)
     if requested_round is None:
@@ -54,13 +55,7 @@ def set_round_is_completed(round):
     if requested_round.is_completed and not do_complete:
         return None, HTTPStatus.CONFLICT
     if do_complete and not requested_round.is_completed:
-        # according to game rules, there can be only one
-        # active round, however the current implementation
-        # potentially allows for multiple active rounds (race condition)
-        # this is ignored at this point (server error due to assertion).
-        assert requested_round.id == game.get_current_round_id()
-
-        game.complete_round()
+        game.complete_round(requested_round)
 
 
 def get_current_round_id():
