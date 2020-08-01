@@ -8,25 +8,7 @@ from . import game
 from . import stats
 
 
-def get_rounds(before=None, limit=25):
-    """ GET /v1/rounds?before=id&limit=max-items """
-    rounds = stats.get_rounds(before, limit)
-    result = {
-        'data': [
-            dict(
-                id=round.id,
-                start_date=round.start_date,
-                end_date=round.end_date,
-                players=len(round.votes)
-            )
-            for round in rounds
-        ]
-    }
-    if len(rounds) == limit:
-        result['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
-    return result, HTTPStatus.OK
-
-
+# game API
 def create_round():
     """ POST /v1/rounds """
     try:
@@ -71,8 +53,10 @@ def get_current_round_id():
         return None, HTTPStatus.NOT_FOUND
 
 
+# stats API
 def get_round_result(round):
     """ GET /v1/rounds/{round}/result """
+    # TODO: GET /v1/rounds/{round}/result
     print(repr(round))
     return dict(
         is_completed=True,
@@ -83,6 +67,7 @@ def get_round_result(round):
 
 def get_round(round):
     """ GET /v1/rounds/{round} """
+    # TODO: GET /v1/rounds/{round}
     print(repr(round))
     return dict(
         id=1,
@@ -91,3 +76,21 @@ def get_round(round):
         is_completed=True,
         players=8,
     )
+
+def get_rounds(before=None, limit=25):
+    """ GET /v1/rounds?before=id&limit=max-items """
+    rounds = stats.get_rounds(before, limit)
+    result = {
+        'data': [
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                end_date=round.end_date,
+                players=len(round.votes)
+            )
+            for round in rounds
+        ]
+    }
+    if len(rounds) == limit:
+        result['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
+    return result, HTTPStatus.OK
