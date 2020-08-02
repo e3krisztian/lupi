@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  db:
+    build: db  # /docker-entrypoint-initdb.d
+    # expose:
+    #   - 5432
+    networks:
+      - internal
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      # not recommended for production, but this is not yet there
+      # postgres user is created
+  game_server:
+    build: game_server
+    depends_on:
+      - db
+    networks:
+      - internal
+    environment:
+      - LUPI_DB_URI=postgresql://lupi@db/lupi
+      - WAIT_HOSTS=db:5432
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=1
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+  ui:
+    build: ui
+    depends_on:
+      - game_server
+    ports:
+      - "8080:5000"
+    networks:
+      - internal
+      - external
+    environment:
+      - WAIT_HOSTS=game_server:8080
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=1
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+
+networks:
+  internal:
+    internal: true
+  external:
+    internal: false
