@@ -14,6 +14,6 @@ COPY requirements.txt /code
 RUN pip install -r requirements.txt
 EXPOSE 5000
 USER lupi
-CMD /wait && gunicorn -w 4 --bind ui:8080 'ui.app:create_app()'
+CMD /wait && gunicorn -w 4 --bind 0.0.0.0:8080 'ui.app:create_app()'
 
 COPY . /code/ui
