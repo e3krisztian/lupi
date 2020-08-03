@@ -13,7 +13,7 @@ WORKDIR /code
 COPY requirements.txt /code
 RUN pip install -r requirements.txt
 
-EXPOSE 5000
+EXPOSE 8080
 USER lupi
 CMD /wait && gunicorn -w 4 --bind game_server:8080 game_server.wsgi:app
 
