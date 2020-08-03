@@ -1,5 +1,11 @@
 version: "3.8"
 
+networks:
+  internal:
+    internal: true
+  external:
+    internal: false
+
 services:
   db:
     build: db  # /docker-entrypoint-initdb.d
@@ -10,7 +16,6 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       # not recommended for production, but this is not yet there
-      # postgres user is created
   game_server:
     build: game_server
     depends_on:
@@ -37,9 +42,3 @@ services:
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=1
       - WAIT_HOST_CONNECT_TIMEOUT=30
-
-networks:
-  internal:
-    internal: true
-  external:
-    internal: false

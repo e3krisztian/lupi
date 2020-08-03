@@ -1,4 +1,4 @@
-.phony: build clean test test-env default
+.PHONY: default build clean test test-env initdb shell/*
 
 default: test
 
@@ -20,3 +20,16 @@ game_server/requirements.txt: game_server/pyproject.toml
 
 ui/requirements.txt: ui/pyproject.toml
 	(cd ui; poetry export -f requirements.txt -o requirements.txt)
+
+initdb:
+	docker-compose run --rm game_server bash -c '/wait && python -m game_server.create_db'
+
+shell/db:
+	# sql console for an interactive look around
+	docker-compose exec db psql -d lupi -U lupi
+
+shell/ui:
+	docker-compose exec --user $$(id -u):$$(id -g) ui bash
+
+shell/game_server:
+	docker-compose exec --user $$(id -u):$$(id -g) game_server bash
