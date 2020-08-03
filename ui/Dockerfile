@@ -6,8 +6,14 @@ ENV WAIT_VERSION 2.7.3
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
 RUN chmod +x /wait
 
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+RUN groupadd -r lupi && useradd --no-log-init -r -g lupi lupi
+
 WORKDIR /code
+COPY requirements.txt /code
+RUN pip install -r requirements.txt
 EXPOSE 5000
-RUN pip install flask
-COPY . /code/ui
+USER lupi
 CMD /wait && python3 -m ui.app  # should be gunicorn
+
+COPY . /code/ui
