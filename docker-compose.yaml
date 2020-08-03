@@ -28,12 +28,12 @@ services:
     depends_on:
       - game_server
     ports:
-      - "8080:5000"
+      - "8080:8080"
     networks:
       - internal
       - external
     environment:
-      - WAIT_HOSTS=game_server:5000
+      - WAIT_HOSTS=game_server:8080
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=1
       - WAIT_HOST_CONNECT_TIMEOUT=30

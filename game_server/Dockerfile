@@ -15,6 +15,6 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5000
 USER lupi
-CMD /wait && python -m game_server.app
+CMD /wait && gunicorn -w 4 --bind game_server:8080 game_server.wsgi:app
 
 COPY . /code/game_server
