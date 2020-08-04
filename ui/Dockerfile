@@ -11,6 +11,7 @@ RUN groupadd -r lupi && useradd --no-log-init -r -g lupi lupi
 
 WORKDIR /code
 COPY requirements.txt /code
+COPY game-client-*.zip /code
 RUN pip install -r requirements.txt
 
 EXPOSE 8080

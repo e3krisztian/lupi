@@ -49,7 +49,8 @@ paths:
           example: 25
       tags: [stats]
       description: List completed rounds, most recent first, paged
-      operationId: game_server.api.get_rounds
+      x-openapi-router-controller: game_server.api
+      operationId: get_rounds
       responses:
         200:
           description: |
@@ -59,12 +60,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/rounds_response"
+                $ref: "#/components/schemas/list_of_rounds"
 
     post:
       tags: [game]
       description: Creates a new game round
-      operationId: game_server.api.create_round
+      x-openapi-router-controller: game_server.api
+      operationId: create_round
       responses:
         201:
           description: A new game round was created
@@ -79,24 +81,14 @@ paths:
     post:
       tags: [game]
       description: Register a user vote
-      operationId: game_server.api.add_vote
+      x-openapi-router-controller: game_server.api
+      operationId: add_vote
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - round
-                - name
-                - number
-              properties:
-                round:
-                  $ref: "#/components/schemas/round"
-                name:
-                  type: string
-                number:
-                  $ref: "#/components/schemas/vote"
+              $ref: "#/components/schemas/vote"
       responses:
         200:
           description: Vote accepted
@@ -111,7 +103,8 @@ paths:
     put:
       tags: [game]
       description: Completes a round, calculates winner
-      operationId: game_server.api.complete_round
+      x-openapi-router-controller: game_server.api
+      operationId: complete_round
       requestBody:
         content:
           application/json:
@@ -137,7 +130,8 @@ paths:
     get:
       tags: [game]
       description: Return the current round id
-      operationId: game_server.api.get_current_round_id
+      x-openapi-router-controller: game_server.api
+      operationId: get_current_round_id
       responses:
         200:
           description: Current round id
@@ -155,24 +149,15 @@ paths:
     get:
       tags: [stats, game]
       description: Get round result
-      operationId: game_server.api.get_round_result
+      x-openapi-router-controller: game_server.api
+      operationId: get_round_result
       responses:
         200:
           description: results
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - is_completed
-                properties:
-                  is_completed:
-                    type: boolean
-                  winner:
-                    type: string
-                    example: winning-user
-                  vote:
-                    $ref: "#/components/schemas/vote"
+                $ref: "#/components/schemas/round_result"
         404:
           description: Round/its result is not available
 
@@ -182,14 +167,15 @@ paths:
     get:
       tags: [stats]
       description: Get round details
-      operationId: game_server.api.get_round
+      x-openapi-router-controller: game_server.api
+      operationId: get_round
       responses:
         200:
           description: Details of round
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/stat_round"
+                $ref: "#/components/schemas/round"
         404:
           description: Round is not available
 
@@ -200,20 +186,34 @@ components:
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/round"
+        $ref: "#/components/schemas/round_id"
 
   schemas:
-    round:
+    round_id:
       type: string
       pattern: "^current|\\d+$"
       default: current
 
     vote:
+      type: object
+      required:
+        - round
+        - name
+        - number
+      properties:
+        round:
+          $ref: "#/components/schemas/round_id"
+        name:
+          type: string
+        number:
+          $ref: "#/components/schemas/voted_number"
+
+    voted_number:
       type: integer
       minimum: 1
       example: 2
 
-    stat_round:
+    round:
       # IDs and start date, end date, players (=number of participants)
       type: object
       required:
@@ -232,7 +232,20 @@ components:
           type: integer
           minimum: 0
 
-    rounds_response:
+    round_result:
+      type: object
+      required:
+        - is_completed
+      properties:
+        is_completed:
+          type: boolean
+        winner:
+          type: string
+          example: winning-user
+        vote:
+          $ref: "#/components/schemas/voted_number"
+
+    list_of_rounds:
       type: object
       required:
         - data
@@ -241,7 +254,7 @@ components:
           type: array
           items:
             allOf:
-              - $ref: "#/components/schemas/stat_round"
+              - $ref: "#/components/schemas/round"
               - type: object
                 required:
                   # make all properties required
