@@ -18,6 +18,11 @@ def create_app(db_uri, testing=False):
     flask_app.config['TESTING'] = testing
     # print(flask_app.config)
     model.db.init_app(flask_app)
+
+    @flask_app.teardown_request
+    def reset_db_session(exception):
+        model.db.session.rollback()
+
     return flask_app
 
 

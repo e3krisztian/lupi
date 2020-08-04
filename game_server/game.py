@@ -42,7 +42,7 @@ def make_round() -> Round:
 
     round = Round(start_date=datetime.utcnow())
     db.session.add(round)
-    db.session.flush()
+    db.session.commit()
     return round
 
 
@@ -55,6 +55,7 @@ def complete_round(round):
     # close other open rounds
     for round in _query_active_rounds():
         round.end_date = round.start_date
+    db.session.commit()
 
 
 def add_vote(round, name, number):
@@ -64,7 +65,7 @@ def add_vote(round, name, number):
         raise Error("No current round")
     round.votes.append(Vote(name=name, number=number))
     try:
-        db.session.flush()
+        db.session.commit()
     except sqlalchemy.exc.IntegrityError as e:
         raise Error from e
 

@@ -286,3 +286,40 @@ def datetime_eq(datetime1, datetime2):
             return isoparse(datetimeish)
         return datetimeish
     return _as_datetime(datetime1) == _as_datetime(datetime2)
+
+
+class Test_v1_persistence:
+    def test_created_round_can_be_closed(self, flask_app, db):
+        with flask_app.test_client() as client:
+            rv = client.post('/v1/rounds')
+            assert rv.status_code == HTTPStatus.CREATED
+            round_id = rv.json
+
+        db.session.rollback()
+        assert not db.session.query(Round).get(round_id).is_completed
+
+        with flask_app.test_client() as client:
+            rv = client.put('/v1/rounds/current/is_completed', json=True)
+            assert rv.status_code == HTTPStatus.NO_CONTENT
+
+        db.session.rollback()
+        assert db.session.query(Round).get(round_id).is_completed
+
+    def test_created_round_can_be_voted(self, flask_app, db):
+        with flask_app.test_client() as client:
+            rv = client.post('/v1/rounds')
+            assert rv.status_code == HTTPStatus.CREATED
+            round_id = rv.json
+
+        db.session.rollback()
+
+        vote = {'name': 'test', 'number': 314, 'round': str(round_id)}
+        with flask_app.test_client() as client:
+            rv = client.post('/v1/votes', json=vote)
+            assert rv.status_code == HTTPStatus.OK
+
+        db.session.rollback()
+
+        vote = db.session.query(Round).get(round_id).votes[0]
+        assert vote.name == 'test'
+        assert vote.number == 314
