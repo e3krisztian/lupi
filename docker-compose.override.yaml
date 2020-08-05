@@ -3,10 +3,11 @@ version: "3.8"
 services:
   game_server:
     volumes:
-      - ./game_server:/code/game_server
+      - ./lupi_game_server:/code/lupi_game_server
   ui:
     volumes:
-      - ./ui:/code/ui
+      - ./lupi_ui:/code/lupi_ui
+      - ./lupi_game_client:/code/lupi_game_client
   info:
     image: python:3.8-slim
     command:

@@ -8,16 +8,16 @@ networks:
 
 services:
   db:
+    image: lupi-db
     build: db  # /docker-entrypoint-initdb.d
-    # expose:
-    #   - 5432
     networks:
       - internal
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       # not recommended for production, but this is not yet there
   game_server:
-    build: game_server
+    image: lupi-game-server
+    build: lupi_game_server
     depends_on:
       - db
     networks:
@@ -29,7 +29,10 @@ services:
       - WAIT_SLEEP_INTERVAL=1
       - WAIT_HOST_CONNECT_TIMEOUT=30
   ui:
-    build: ui
+    image: lupi-ui
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
     depends_on:
       - game_server
     ports:

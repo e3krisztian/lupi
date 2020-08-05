@@ -11,11 +11,10 @@ RUN groupadd -r lupi && useradd --no-log-init -r -g lupi lupi
 
 WORKDIR /code
 COPY requirements.txt /code
-COPY game-client-*.zip /code
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
 USER lupi
-CMD /wait && gunicorn -w 4 --bind 0.0.0.0:8080 'ui.app:create_app()'
+CMD /wait && gunicorn -w 4 --bind game_server:8080 lupi_game_server.wsgi:app
 
-COPY . /code/ui
+COPY . /code/lupi_game_server

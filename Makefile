@@ -3,16 +3,16 @@
 default: test
 
 test: test-env
-	(cd game_server; poetry run pytest)
+	(cd lupi_game_server; poetry run pytest)
 
 clean:
 	git clean -fdX # remove only ignored files, directories
 
-build: clean game_client game_server/requirements.txt ui/requirements.txt
+build: clean lupi_game_client lupi_game_server/requirements.txt lupi_ui/requirements.txt
 	docker-compose build
 
 initdb:
-	docker-compose run --rm game_server bash -c '/wait && python -m game_server.create_db'
+	docker-compose run --rm game_server bash -c '/wait && python -m lupi_game_server.create_db'
 
 shell/db:
 	# sql console for an interactive look around
@@ -27,21 +27,18 @@ shell/game_server:
 
 # ugly details - requires poetry & docker
 
-test-env: ui/requirements.txt
-	(cd game_server; poetry install)
-	(cd ui; poetry install)
+test-env: lupi_ui/requirements.txt
+	(cd lupi_game_server; poetry install)
+	(cd lupi_ui; poetry install)
 
-game_server/requirements.txt: game_server/pyproject.toml
-	(cd game_server; poetry export -f requirements.txt -o requirements.txt)
+lupi_game_server/requirements.txt: lupi_game_server/pyproject.toml
+	(cd lupi_game_server; poetry export -f requirements.txt -o requirements.txt)
 
-game_client: game_server/openapi.yaml
-	rm -rf game_client
-	docker run --rm --user $$(id -u):$$(id -g) -v $$PWD:/local openapitools/openapi-generator-cli generate -g python --package-name=game_client -i /local/game_server/openapi.yaml -o /local/game_client
+lupi_game_client: lupi_game_server/openapi.yaml
+	rm -rf lupi_game_client
+	docker run --rm --user $$(id -u):$$(id -g) -v $$PWD:/local openapitools/openapi-generator-cli generate -g python --package-name=lupi_game_client -i /local/lupi_game_server/openapi.yaml -o /local/lupi_game_client
 
-ui/requirements.txt: ui/pyproject.toml game_client
-	# generate the game-client package
-	(cd game_client; python setup.py build sdist --formats=zip)
-	mv game_client/dist/game-client*.zip ui
-	# update lock/hash - while it is not in the output
-	(cd ui; poetry add ./game-client*.zip)
-	(cd ui; poetry export -f requirements.txt -o requirements.txt)
+lupi_ui/requirements.txt: lupi_ui/pyproject.toml lupi_game_client
+	(cd lupi_ui; poetry export -f requirements.txt -o requirements.txt --without-hashes)
+	# --without-hashes is sadly required because of having lupi_game_client installed as local package (=editable)
+	# (see https://github.com/pypa/pip/issues/4995)
