@@ -14,16 +14,16 @@ services:
       - python
       - -c
       - |
-        from socket import gethostbyname as h
+        from socket import gethostbyname as ip
         print(f"""\
         IP addresses of containers:
-          db:          {h('db')}
-          game_server: {h('game_server')}
-          ui:          {h('ui')}\n""")
+          db:          {ip('db')}
+          game_server: {ip('game_server')}
+          ui:          {ip('ui')}\n""")
         print(f"""\
         Accessible internal services of interest:
-          game_server API:   http://{h('game_server')}:8080/v1/ui
-          ui (in container): http://{h('ui')}:8080\n""")
+          game_server API:   http://{ip('game_server')}:8080/v1/ui
+          ui (in container): http://{ip('ui')}:8080\n""")
     networks:
       - internal
     depends_on:

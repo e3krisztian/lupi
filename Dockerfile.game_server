@@ -1,0 +1,16 @@
+FROM python:3.8-slim
+
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+RUN groupadd -r lupi && useradd --no-log-init -r -g lupi lupi
+
+WORKDIR /code
+COPY scripts/wait-for-postgres /code/
+COPY lupi_game_server/requirements.txt /code
+RUN pip install -r requirements.txt
+
+EXPOSE 8080
+USER lupi
+CMD ./wait-for-postgres db && \
+    gunicorn -w 4 --bind game_server:8080 lupi_game_server.wsgi:app
+
+COPY lupi_game_server /code/lupi_game_server

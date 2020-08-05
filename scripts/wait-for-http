@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+from urllib.request import urlopen, URLError, HTTPError
+from http.client import HTTPConnection
+import logging
+import socket
+import sys
+import time
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='[%(asctime)s] wait-for-http [%(levelname)s] %(message)s')
+
+timeout = 1.0
+wait = 1.0
+
+server = sys.argv[1]
+url = f'http://{server}'
+
+while True:
+    try:
+        try:
+            urlopen(url, timeout=timeout)
+        except HTTPError as e:
+            logging.warning(f'Server "{server}" returned {e}')
+        logging.info(f'Server "{server}" is ready')
+        sys.exit(0)
+    except (URLError, socket.error):
+        logging.warning(f'Server "{server}" is not yet available')
+        time.sleep(wait)
