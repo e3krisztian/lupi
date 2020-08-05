@@ -30,3 +30,15 @@ services:
       - db
       - game_server
       - ui
+  ui-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui-tests
+    image: lupi-ui-test
+    volumes:
+      - ./lupi_ui:/code/lupi_ui
+      - ./lupi_game_client:/code/lupi_game_client
+    depends_on:
+      - ui
+    networks:
+      - internal

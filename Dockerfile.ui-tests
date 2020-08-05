@@ -1,0 +1,17 @@
+FROM python:3.8-slim
+
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+RUN groupadd -r lupi && useradd --no-log-init -r -g lupi lupi
+
+WORKDIR /code
+COPY scripts/wait-for-http /code/
+
+COPY lupi_ui/requirements-tests.txt /code/lupi_ui/
+COPY lupi_game_client /code/lupi_game_client
+RUN cd lupi_ui && pip install -r requirements-tests.txt
+
+USER lupi
+
+# code is expected to be volume mapped
+VOLUME [ "/code/lupi_game_client" "/code/lupi_ui"]
+CMD echo "bash -c './wait-for-http ui:8080 && pytest'"
