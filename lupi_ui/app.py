@@ -39,15 +39,13 @@ def close_round():
         return redirect(url_for('lupi_ui.index'), HTTPStatus.SEE_OTHER)
 
 
-def create_app(testing=False):
+def create_app():
     app = flask.Flask(__name__)
     app.register_blueprint(ui)
-    app.config['TESTING'] = testing
-    app.config['DEBUG'] = True
     app.config['SECRET_KEY'] = os.environ['FLASK_SECRET_KEY'].encode()
     return app
 
 
 if __name__ == '__main__':
-    app = create_app(testing=True)
-    app.run(host='0.0.0.0', port='5000', debug=True)
+    app = create_app()
+    app.run(host='0.0.0.0', port='5000')

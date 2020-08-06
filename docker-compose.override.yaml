@@ -12,6 +12,7 @@ services:
       - ./lupi_game_client:/code/lupi_game_client
     environment:
       FLASK_SECRET_KEY: N04-50-S3cr#4
+      FLASK_ENV: development
   info:
     image: python:3.8-slim
     command:
@@ -57,3 +58,4 @@ services:
       - internal
     environment:
       FLASK_SECRET_KEY: N04-50-S3cr#4
+      FLASK_ENV: development

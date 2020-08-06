@@ -8,7 +8,7 @@ import pytest
 
 class WebUI:
     def __init__(self):
-        self.app = create_app(testing=True)
+        self.app = create_app()
 
     def url_for(self, *args, **kwargs):
         with self.app.test_request_context():
