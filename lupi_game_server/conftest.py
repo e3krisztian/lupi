@@ -1,7 +1,6 @@
 from .app import create_app
 from . import model
 
-import connexion
 import pytest
 
 @pytest.fixture(scope="session")
