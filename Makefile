@@ -12,7 +12,9 @@ tests/game_server:
 
 tests/ui: lupi_ui/requirements-tests.txt
 	# ui is tested via live test env
-	docker-compose run ui-tests bash -c './wait-for-http ui:8080 && pytest'
+	docker-compose kill db
+	docker-compose up initdb  # need to wait to exit
+	docker-compose run ui-tests bash -c './wait-for-http game_server:8080 && pytest lupi_ui'
 
 clean:
 	git clean -fdX # remove only ignored files, directories
@@ -48,7 +50,7 @@ lupi_ui/requirements.txt: lupi_ui/pyproject.toml lupi_game_client
 	# --without-hashes is sadly required because of having lupi_game_client installed as local package (=editable)
 	# (see https://github.com/pypa/pip/issues/4995)
 
-lupi_ui/requirements-tests.txt: lupi_ui/pyproject.toml lupi_game_client
+lupi_ui/requirements-tests.txt: lupi_ui/pyproject.toml lupi_game_client/setup.py
 	(cd lupi_ui; poetry export --dev -f requirements.txt -o requirements-tests.txt --without-hashes)
 	# --without-hashes is sadly required because of having lupi_game_client installed as local package (=editable)
 	# (see https://github.com/pypa/pip/issues/4995)

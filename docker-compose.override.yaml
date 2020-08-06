@@ -1,6 +1,8 @@
 version: "3.8"
 
 services:
+  db:
+    tmpfs: /var/lib/postgresql/data
   game_server:
     volumes:
       - ./lupi_game_server:/code/lupi_game_server
@@ -30,6 +32,15 @@ services:
       - db
       - game_server
       - ui
+  initdb:
+    image: lupi-game-server
+    command: bash -c './wait-for-postgres db && python -m lupi_game_server.create_db'
+    depends_on:
+      - db
+    networks:
+      - internal
+    environment:
+      - LUPI_DB_URI=postgresql://lupi@db/lupi
   ui-tests:
     build:
       context: .
@@ -39,6 +50,6 @@ services:
       - ./lupi_ui:/code/lupi_ui
       - ./lupi_game_client:/code/lupi_game_client
     depends_on:
-      - ui
+      - game_server
     networks:
       - internal
