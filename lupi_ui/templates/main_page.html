@@ -23,18 +23,13 @@
     </ul>
 </form>
 <h1>Admin</h1>
-<ul>
-    <li>
-        <form method="POST" action="{{ url_for('lupi_ui.start_round') }}">
-            <button type="submit">start new round</button>
-        </form>
-    </li>
-    <li>
-        <form method="POST" action="{{ url_for('lupi_ui.close_round') }}">
-            <button type="submit">close current round</button>
-        </form>
-    </li>
-</ul>
+<form method="POST" action="{{ url_for('lupi_ui.start_round') }}">
+    <button type="submit">start new round</button>
+</form>
+<br>
+<form method="POST" action="{{ url_for('lupi_ui.close_round') }}">
+    <button type="submit">close current round</button>
+</form>
 <h1>Statistics/Info</h1>
 <ul>
     <li>previous rounds</li>

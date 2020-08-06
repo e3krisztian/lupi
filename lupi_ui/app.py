@@ -30,14 +30,10 @@ class VoteForm(FlaskForm):
         validators=[DataRequired(), NumberRange(min=1)])
 
 
-@ui.route('/vote', methods=['POST'])
+@ui.route('/vote', methods=['GET', 'POST'])
 def vote():
     form = VoteForm()
-    if not form.validate():
-        print('hello')
-        print(f'name={form.name.data}, number={form.number.data}')
-        print(f'name={form.name.errors}, number={form.number.errors}')
-
+    if not form.validate_on_submit():
         return render_template('main_page.html', form=form)
 
     with game_server.open() as server:
