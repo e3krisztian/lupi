@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Least Unique Positive Integer Game{% endblock %}</h1>
-  Game rules:
+{% block title %}Least Unique Positive Integer Game{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<h1>Game rules</h1>
 <ul>
     <li>it is a Multiplayer game</li>
     <li>each player picks a positive integer</li>
     <li>the lowest unique integer wins</li>
 </ul>
-{% endblock %}
-
-{% block content %}
 <h1>Play</h1>
 <ul>
     <li>vote</li>
 </ul>
 <h1>Admin</h1>
 <ul>
-    <li>start new round</li>
-    <li>close current round</li>
+    <li>
+        <form method="POST" action="{{ url_for('lupi_ui.start_round') }}">
+            <button type="submit">start new round</button>
+        </form>
+    </li>
+    <li>
+        <form method="POST" action="{{ url_for('lupi_ui.close_round') }}">
+            <button type="submit">close current round</button>
+        </form>
+    </li>
 </ul>
 <h1>Statistics/Info</h1>
 <ul>
