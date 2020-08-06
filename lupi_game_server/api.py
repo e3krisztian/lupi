@@ -32,7 +32,7 @@ def add_vote():
         return None, HTTPStatus.CONFLICT
 
 
-def complete_round(round):
+def set_round_completed(round):
     """ PUT /v1/rounds/{round}/is_completed """
     requested_round = game.get_round(round)
     if requested_round is None:

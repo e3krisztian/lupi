@@ -104,7 +104,7 @@ paths:
       tags: [game]
       description: Completes a round, calculates winner
       x-openapi-router-controller: lupi_game_server.api
-      operationId: complete_round
+      operationId: set_round_completed
       requestBody:
         content:
           application/json:

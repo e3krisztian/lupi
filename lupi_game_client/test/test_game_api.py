@@ -34,12 +34,6 @@ class TestGameApi(unittest.TestCase):
         """
         pass
 
-    def test_complete_round(self):
-        """Test case for complete_round
-
-        """
-        pass
-
     def test_create_round(self):
         """Test case for create_round
 
@@ -54,6 +48,12 @@ class TestGameApi(unittest.TestCase):
 
     def test_get_round_result(self):
         """Test case for get_round_result
+
+        """
+        pass
+
+    def test_set_round_completed(self):
+        """Test case for set_round_completed
 
         """
         pass
