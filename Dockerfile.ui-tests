@@ -14,5 +14,4 @@ RUN cd lupi_ui && pip install -r requirements-tests.txt
 USER lupi
 
 # code is expected to be volume mapped
-VOLUME [ "/code/lupi_game_client" "/code/lupi_ui" ]
 CMD echo "SKIPPING: bash -c './wait-for-http game_server:8080 && pytest'"
