@@ -310,8 +310,8 @@ class StatsApi(object):
 
         :param before: (Paging) Return rounds before this round id
         :type before: int
-        :param limit: (Paging) Return at most this many rounds at once
-        :type limit: int
+        :param page_size: (Paging) Return at most this many rounds at once
+        :type page_size: int
         :param async_req: Whether to execute the request asynchronously.
         :type async_req: bool, optional
         :param _preload_content: if False, the urllib3.HTTPResponse object will
@@ -342,8 +342,8 @@ class StatsApi(object):
 
         :param before: (Paging) Return rounds before this round id
         :type before: int
-        :param limit: (Paging) Return at most this many rounds at once
-        :type limit: int
+        :param page_size: (Paging) Return at most this many rounds at once
+        :type page_size: int
         :param async_req: Whether to execute the request asynchronously.
         :type async_req: bool, optional
         :param _return_http_data_only: response data without head status code
@@ -371,7 +371,7 @@ class StatsApi(object):
 
         all_params = [
             'before',
-            'limit'
+            'page_size'
         ]
         all_params.extend(
             [
@@ -392,10 +392,10 @@ class StatsApi(object):
             local_var_params[key] = val
         del local_var_params['kwargs']
 
-        if self.api_client.client_side_validation and 'limit' in local_var_params and local_var_params['limit'] > 100:  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `limit` when calling `get_rounds`, must be a value less than or equal to `100`")  # noqa: E501
-        if self.api_client.client_side_validation and 'limit' in local_var_params and local_var_params['limit'] < 1:  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `limit` when calling `get_rounds`, must be a value greater than or equal to `1`")  # noqa: E501
+        if self.api_client.client_side_validation and 'page_size' in local_var_params and local_var_params['page_size'] > 100:  # noqa: E501
+            raise ApiValueError("Invalid value for parameter `page_size` when calling `get_rounds`, must be a value less than or equal to `100`")  # noqa: E501
+        if self.api_client.client_side_validation and 'page_size' in local_var_params and local_var_params['page_size'] < 1:  # noqa: E501
+            raise ApiValueError("Invalid value for parameter `page_size` when calling `get_rounds`, must be a value greater than or equal to `1`")  # noqa: E501
         collection_formats = {}
 
         path_params = {}
@@ -403,8 +403,8 @@ class StatsApi(object):
         query_params = []
         if 'before' in local_var_params and local_var_params['before'] is not None:  # noqa: E501
             query_params.append(('before', local_var_params['before']))  # noqa: E501
-        if 'limit' in local_var_params and local_var_params['limit'] is not None:  # noqa: E501
-            query_params.append(('limit', local_var_params['limit']))  # noqa: E501
+        if 'page_size' in local_var_params and local_var_params['page_size'] is not None:  # noqa: E501
+            query_params.append(('page_size', local_var_params['page_size']))  # noqa: E501
 
         header_params = {}
 

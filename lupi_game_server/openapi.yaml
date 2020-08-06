@@ -39,14 +39,11 @@ paths:
           schema:
             type: integer
           example: 4
-        - name: limit
+        - name: page_size
           in: query
           description: "(Paging) Return at most this many rounds at once"
           schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-          example: 25
+            $ref: "#/components/schemas/page_size"
       tags: [stats]
       description: List completed rounds, most recent first, paged
       x-openapi-router-controller: lupi_game_server.api
@@ -271,5 +268,24 @@ components:
               end_date: 2020-08-02T13:24:50,515819204+00:00
               players: 8
         previous:
-          type: string
-          example: /v1/rounds?before=4
+          $ref: "#/components/schemas/paging"
+
+    paging:
+      type: object
+      properties:
+        before:
+          $ref: "#/components/schemas/round_id"
+        page_size:
+          $ref: "#/components/schemas/page_size"
+      required:
+        - before
+        - page_size
+      example:
+        before: 4
+        page_size: 25
+
+    page_size:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25

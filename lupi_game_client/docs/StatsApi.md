@@ -134,7 +134,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_rounds**
-> ListOfRounds get_rounds(before=before, limit=limit)
+> ListOfRounds get_rounds(before=before, page_size=page_size)
 
 
 
@@ -160,10 +160,10 @@ with lupi_game_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = lupi_game_client.StatsApi(api_client)
     before = 4 # int | (Paging) Return rounds before this round id (optional)
-limit = 25 # int | (Paging) Return at most this many rounds at once (optional)
+page_size = 25 # int | (Paging) Return at most this many rounds at once (optional) (default to 25)
 
     try:
-        api_response = api_instance.get_rounds(before=before, limit=limit)
+        api_response = api_instance.get_rounds(before=before, page_size=page_size)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling StatsApi->get_rounds: %s\n" % e)
@@ -174,7 +174,7 @@ limit = 25 # int | (Paging) Return at most this many rounds at once (optional)
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **before** | **int**| (Paging) Return rounds before this round id | [optional] 
- **limit** | **int**| (Paging) Return at most this many rounds at once | [optional] 
+ **page_size** | **int**| (Paging) Return at most this many rounds at once | [optional] [default to 25]
 
 ### Return type
 

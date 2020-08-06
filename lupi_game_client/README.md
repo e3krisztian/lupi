@@ -102,6 +102,7 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ListOfRounds](docs/ListOfRounds.md)
+ - [Paging](docs/Paging.md)
  - [Round](docs/Round.md)
  - [RoundResult](docs/RoundResult.md)
  - [Vote](docs/Vote.md)

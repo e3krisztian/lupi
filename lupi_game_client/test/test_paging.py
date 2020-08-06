@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import lupi_game_client
-from lupi_game_client.models.list_of_rounds import ListOfRounds  # noqa: E501
+from lupi_game_client.models.paging import Paging  # noqa: E501
 from lupi_game_client.rest import ApiException
 
-class TestListOfRounds(unittest.TestCase):
-    """ListOfRounds unit test stubs"""
+class TestPaging(unittest.TestCase):
+    """Paging unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,27 +29,24 @@ class TestListOfRounds(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test ListOfRounds
+        """Test Paging
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = lupi_game_client.models.list_of_rounds.ListOfRounds()  # noqa: E501
+        # model = lupi_game_client.models.paging.Paging()  # noqa: E501
         if include_optional :
-            return ListOfRounds(
-                data = [
-                    {"id":1,"start_date":"2020-08-01T13:24:50,515819204+00:00","end_date":"2020-08-02T13:24:50,515819204+00:00","players":8}
-                    ], 
-                previous = {"before":4,"page_size":25}
+            return Paging(
+                before = 12, 
+                page_size = 1
             )
         else :
-            return ListOfRounds(
-                data = [
-                    {"id":1,"start_date":"2020-08-01T13:24:50,515819204+00:00","end_date":"2020-08-02T13:24:50,515819204+00:00","players":8}
-                    ],
+            return Paging(
+                before = 12,
+                page_size = 1,
         )
 
-    def testListOfRounds(self):
-        """Test ListOfRounds"""
+    def testPaging(self):
+        """Test Paging"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 

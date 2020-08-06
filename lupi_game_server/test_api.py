@@ -102,12 +102,12 @@ class Test_get_v1_rounds:
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == []
 
-    def test_paging_limit(self, client):
+    def test_paging_size(self, client):
         r1 = _make_completed_round(1)
         r2 = _make_completed_round(2)
         r3 = _make_completed_round(3)
 
-        rv = client.get(self.URL, query_string={'limit': 2})
+        rv = client.get(self.URL, query_string={'page_size': 2})
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == [r3.id, r2.id]
 
@@ -116,19 +116,19 @@ class Test_get_v1_rounds:
         r2 = _make_completed_round(2)
         r3 = _make_completed_round(3)
 
-        rv = client.get(self.URL, query_string={'limit': 1})
+        rv = client.get(self.URL, query_string={'page_size': 1})
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == [r3.id]
 
-        rv = client.get(rv.json['previous'])
+        rv = client.get(self.URL, query_string=rv.json['previous'])
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == [r2.id]
 
-        rv = client.get(rv.json['previous'])
+        rv = client.get(self.URL, query_string=rv.json['previous'])
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == [r1.id]
 
-        rv = client.get(rv.json['previous'])
+        rv = client.get(self.URL, query_string=rv.json['previous'])
         assert rv.status_code == HTTPStatus.OK
         assert [r['id'] for r in rv.json['data']] == []
         assert 'previous' not in rv.json

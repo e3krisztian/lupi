@@ -77,9 +77,9 @@ def get_round(round_id):
         players=8,
     )
 
-def get_rounds(before=None, limit=25):
-    """ GET /v1/rounds?before=id&limit=max-items """
-    rounds = stats.get_rounds(before, limit)
+def get_rounds(before=None, page_size=25):
+    """ GET /v1/rounds?before=id&page_size=max-items """
+    rounds = stats.get_rounds(before, page_size)
     result = {
         'data': [
             dict(
@@ -91,6 +91,9 @@ def get_rounds(before=None, limit=25):
             for round in rounds
         ]
     }
-    if len(rounds) == limit:
-        result['previous'] = f"/v1/rounds?before={rounds[-1].id}&limit={limit}"
+    if len(rounds) == page_size:
+        result['previous'] = dict(
+            before=rounds[-1].id,
+            page_size=page_size
+        )
     return result, HTTPStatus.OK

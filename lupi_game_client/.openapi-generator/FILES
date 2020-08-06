@@ -5,6 +5,7 @@
 README.md
 docs/GameApi.md
 docs/ListOfRounds.md
+docs/Paging.md
 docs/Round.md
 docs/RoundResult.md
 docs/StatsApi.md
@@ -19,6 +20,7 @@ lupi_game_client/configuration.py
 lupi_game_client/exceptions.py
 lupi_game_client/models/__init__.py
 lupi_game_client/models/list_of_rounds.py
+lupi_game_client/models/paging.py
 lupi_game_client/models/round.py
 lupi_game_client/models/round_result.py
 lupi_game_client/models/vote.py
@@ -30,6 +32,7 @@ test-requirements.txt
 test/__init__.py
 test/test_game_api.py
 test/test_list_of_rounds.py
+test/test_paging.py
 test/test_round.py
 test/test_round_result.py
 test/test_stats_api.py
