@@ -7,8 +7,8 @@ Method | HTTP request | Description
 [**add_vote**](GameApi.md#add_vote) | **POST** /votes | 
 [**create_round**](GameApi.md#create_round) | **POST** /rounds | 
 [**get_current_round_id**](GameApi.md#get_current_round_id) | **GET** /rounds/current/id | 
-[**get_round_result**](GameApi.md#get_round_result) | **GET** /rounds/{round}/result | 
-[**set_round_completed**](GameApi.md#set_round_completed) | **PUT** /rounds/{round}/is_completed | 
+[**get_round_result**](GameApi.md#get_round_result) | **GET** /rounds/{round_id}/result | 
+[**set_round_completed**](GameApi.md#set_round_completed) | **PUT** /rounds/{round_id}/is_completed | 
 
 
 # **add_vote**
@@ -190,7 +190,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_round_result**
-> RoundResult get_round_result(round)
+> RoundResult get_round_result(round_id)
 
 
 
@@ -215,10 +215,10 @@ configuration = lupi_game_client.Configuration(
 with lupi_game_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = lupi_game_client.GameApi(api_client)
-    round = 'current' # str |  (default to 'current')
+    round_id = 56 # int | 
 
     try:
-        api_response = api_instance.get_round_result(round)
+        api_response = api_instance.get_round_result(round_id)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling GameApi->get_round_result: %s\n" % e)
@@ -228,7 +228,7 @@ with lupi_game_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **round** | **str**|  | [default to &#39;current&#39;]
+ **round_id** | **int**|  | 
 
 ### Return type
 
@@ -252,7 +252,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **set_round_completed**
-> set_round_completed(round, body=body)
+> set_round_completed(round_id, body=body)
 
 
 
@@ -277,11 +277,11 @@ configuration = lupi_game_client.Configuration(
 with lupi_game_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = lupi_game_client.GameApi(api_client)
-    round = 'current' # str |  (default to 'current')
+    round_id = 56 # int | 
 body = True # bool |  (optional)
 
     try:
-        api_instance.set_round_completed(round, body=body)
+        api_instance.set_round_completed(round_id, body=body)
     except ApiException as e:
         print("Exception when calling GameApi->set_round_completed: %s\n" % e)
 ```
@@ -290,7 +290,7 @@ body = True # bool |  (optional)
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **round** | **str**|  | [default to &#39;current&#39;]
+ **round_id** | **int**|  | 
  **body** | **bool**|  | [optional] 
 
 ### Return type

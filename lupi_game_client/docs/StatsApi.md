@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_round**](StatsApi.md#get_round) | **GET** /rounds/{round} | 
-[**get_round_result**](StatsApi.md#get_round_result) | **GET** /rounds/{round}/result | 
+[**get_round**](StatsApi.md#get_round) | **GET** /rounds/{round_id} | 
+[**get_round_result**](StatsApi.md#get_round_result) | **GET** /rounds/{round_id}/result | 
 [**get_rounds**](StatsApi.md#get_rounds) | **GET** /rounds | 
 
 
 # **get_round**
-> Round get_round(round)
+> Round get_round(round_id)
 
 
 
@@ -35,10 +35,10 @@ configuration = lupi_game_client.Configuration(
 with lupi_game_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = lupi_game_client.StatsApi(api_client)
-    round = 'current' # str |  (default to 'current')
+    round_id = 56 # int | 
 
     try:
-        api_response = api_instance.get_round(round)
+        api_response = api_instance.get_round(round_id)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling StatsApi->get_round: %s\n" % e)
@@ -48,7 +48,7 @@ with lupi_game_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **round** | **str**|  | [default to &#39;current&#39;]
+ **round_id** | **int**|  | 
 
 ### Return type
 
@@ -72,7 +72,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_round_result**
-> RoundResult get_round_result(round)
+> RoundResult get_round_result(round_id)
 
 
 
@@ -97,10 +97,10 @@ configuration = lupi_game_client.Configuration(
 with lupi_game_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = lupi_game_client.StatsApi(api_client)
-    round = 'current' # str |  (default to 'current')
+    round_id = 56 # int | 
 
     try:
-        api_response = api_instance.get_round_result(round)
+        api_response = api_instance.get_round_result(round_id)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling StatsApi->get_round_result: %s\n" % e)
@@ -110,7 +110,7 @@ with lupi_game_client.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **round** | **str**|  | [default to &#39;current&#39;]
+ **round_id** | **int**|  | 
 
 ### Return type
 

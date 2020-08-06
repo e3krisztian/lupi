@@ -407,18 +407,18 @@ class GameApi(object):
             collection_formats=collection_formats,
             _request_auth=local_var_params.get('_request_auth'))
 
-    def get_round_result(self, round, **kwargs):  # noqa: E501
+    def get_round_result(self, round_id, **kwargs):  # noqa: E501
         """get_round_result  # noqa: E501
 
         Get round result  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.get_round_result(round, async_req=True)
+        >>> thread = api.get_round_result(round_id, async_req=True)
         >>> result = thread.get()
 
-        :param round: (required)
-        :type round: str
+        :param round_id: (required)
+        :type round_id: int
         :param async_req: Whether to execute the request asynchronously.
         :type async_req: bool, optional
         :param _preload_content: if False, the urllib3.HTTPResponse object will
@@ -435,20 +435,20 @@ class GameApi(object):
         :rtype: RoundResult
         """
         kwargs['_return_http_data_only'] = True
-        return self.get_round_result_with_http_info(round, **kwargs)  # noqa: E501
+        return self.get_round_result_with_http_info(round_id, **kwargs)  # noqa: E501
 
-    def get_round_result_with_http_info(self, round, **kwargs):  # noqa: E501
+    def get_round_result_with_http_info(self, round_id, **kwargs):  # noqa: E501
         """get_round_result  # noqa: E501
 
         Get round result  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.get_round_result_with_http_info(round, async_req=True)
+        >>> thread = api.get_round_result_with_http_info(round_id, async_req=True)
         >>> result = thread.get()
 
-        :param round: (required)
-        :type round: str
+        :param round_id: (required)
+        :type round_id: int
         :param async_req: Whether to execute the request asynchronously.
         :type async_req: bool, optional
         :param _return_http_data_only: response data without head status code
@@ -475,7 +475,7 @@ class GameApi(object):
         local_var_params = locals()
 
         all_params = [
-            'round'
+            'round_id'
         ]
         all_params.extend(
             [
@@ -495,18 +495,16 @@ class GameApi(object):
                 )
             local_var_params[key] = val
         del local_var_params['kwargs']
-        # verify the required parameter 'round' is set
-        if self.api_client.client_side_validation and ('round' not in local_var_params or  # noqa: E501
-                                                        local_var_params['round'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `round` when calling `get_round_result`")  # noqa: E501
+        # verify the required parameter 'round_id' is set
+        if self.api_client.client_side_validation and ('round_id' not in local_var_params or  # noqa: E501
+                                                        local_var_params['round_id'] is None):  # noqa: E501
+            raise ApiValueError("Missing the required parameter `round_id` when calling `get_round_result`")  # noqa: E501
 
-        if self.api_client.client_side_validation and 'round' in local_var_params and not re.search(r'^current|\d+$', local_var_params['round']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `round` when calling `get_round_result`, must conform to the pattern `/^current|\d+$/`")  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'round' in local_var_params:
-            path_params['round'] = local_var_params['round']  # noqa: E501
+        if 'round_id' in local_var_params:
+            path_params['round_id'] = local_var_params['round_id']  # noqa: E501
 
         query_params = []
 
@@ -524,7 +522,7 @@ class GameApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/rounds/{round}/result', 'GET',
+            '/rounds/{round_id}/result', 'GET',
             path_params,
             query_params,
             header_params,
@@ -540,18 +538,18 @@ class GameApi(object):
             collection_formats=collection_formats,
             _request_auth=local_var_params.get('_request_auth'))
 
-    def set_round_completed(self, round, **kwargs):  # noqa: E501
+    def set_round_completed(self, round_id, **kwargs):  # noqa: E501
         """set_round_completed  # noqa: E501
 
         Completes a round, calculates winner  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.set_round_completed(round, async_req=True)
+        >>> thread = api.set_round_completed(round_id, async_req=True)
         >>> result = thread.get()
 
-        :param round: (required)
-        :type round: str
+        :param round_id: (required)
+        :type round_id: int
         :param body:
         :type body: bool
         :param async_req: Whether to execute the request asynchronously.
@@ -570,20 +568,20 @@ class GameApi(object):
         :rtype: None
         """
         kwargs['_return_http_data_only'] = True
-        return self.set_round_completed_with_http_info(round, **kwargs)  # noqa: E501
+        return self.set_round_completed_with_http_info(round_id, **kwargs)  # noqa: E501
 
-    def set_round_completed_with_http_info(self, round, **kwargs):  # noqa: E501
+    def set_round_completed_with_http_info(self, round_id, **kwargs):  # noqa: E501
         """set_round_completed  # noqa: E501
 
         Completes a round, calculates winner  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
 
-        >>> thread = api.set_round_completed_with_http_info(round, async_req=True)
+        >>> thread = api.set_round_completed_with_http_info(round_id, async_req=True)
         >>> result = thread.get()
 
-        :param round: (required)
-        :type round: str
+        :param round_id: (required)
+        :type round_id: int
         :param body:
         :type body: bool
         :param async_req: Whether to execute the request asynchronously.
@@ -612,7 +610,7 @@ class GameApi(object):
         local_var_params = locals()
 
         all_params = [
-            'round',
+            'round_id',
             'body'
         ]
         all_params.extend(
@@ -633,18 +631,16 @@ class GameApi(object):
                 )
             local_var_params[key] = val
         del local_var_params['kwargs']
-        # verify the required parameter 'round' is set
-        if self.api_client.client_side_validation and ('round' not in local_var_params or  # noqa: E501
-                                                        local_var_params['round'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `round` when calling `set_round_completed`")  # noqa: E501
+        # verify the required parameter 'round_id' is set
+        if self.api_client.client_side_validation and ('round_id' not in local_var_params or  # noqa: E501
+                                                        local_var_params['round_id'] is None):  # noqa: E501
+            raise ApiValueError("Missing the required parameter `round_id` when calling `set_round_completed`")  # noqa: E501
 
-        if self.api_client.client_side_validation and 'round' in local_var_params and not re.search(r'^current|\d+$', local_var_params['round']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `round` when calling `set_round_completed`, must conform to the pattern `/^current|\d+$/`")  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'round' in local_var_params:
-            path_params['round'] = local_var_params['round']  # noqa: E501
+        if 'round_id' in local_var_params:
+            path_params['round_id'] = local_var_params['round_id']  # noqa: E501
 
         query_params = []
 
@@ -664,7 +660,7 @@ class GameApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/rounds/{round}/is_completed', 'PUT',
+            '/rounds/{round_id}/is_completed', 'PUT',
             path_params,
             query_params,
             header_params,

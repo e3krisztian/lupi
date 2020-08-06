@@ -37,14 +37,14 @@ class TestListOfRounds(unittest.TestCase):
         if include_optional :
             return ListOfRounds(
                 data = [
-                    null
+                    {"id":1,"start_date":"2020-08-01T13:24:50,515819204+00:00","end_date":"2020-08-02T13:24:50,515819204+00:00","players":8}
                     ], 
                 previous = '/v1/rounds?before=4'
             )
         else :
             return ListOfRounds(
                 data = [
-                    null
+                    {"id":1,"start_date":"2020-08-01T13:24:50,515819204+00:00","end_date":"2020-08-02T13:24:50,515819204+00:00","players":8}
                     ],
         )
 

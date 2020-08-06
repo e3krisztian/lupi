@@ -3,7 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**round** | **str** |  | [default to 'current']
+**round_id** | **int** |  | 
 **name** | **str** |  | 
 **number** | **int** |  | 
 

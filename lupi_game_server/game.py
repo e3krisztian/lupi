@@ -12,6 +12,7 @@ from datetime import datetime
 
 import sqlalchemy
 from .model import db, Round, Vote
+from typing import Union
 
 
 RoundId = int
@@ -21,7 +22,7 @@ class Error(Exception):
     pass
 
 
-def get_round(round_id: str) -> Round:
+def get_round(round_id: Union[int, str]) -> Round:
     if round_id == "current":
         round = _get_current_round()
     else:

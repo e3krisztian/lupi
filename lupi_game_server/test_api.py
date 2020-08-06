@@ -159,7 +159,7 @@ class Test_post_v1_votes:
 
     def test_creates_vote(self, client):
         round = game.make_round()
-        vote = dict(round=str(round.id), name='voter', number=2)
+        vote = dict(round_id=round.id, name='voter', number=2)
 
         rv = client.post(self.URL, json=vote)
 
@@ -169,20 +169,20 @@ class Test_post_v1_votes:
         assert round.votes[0].number == 2
 
     def test_voting_on_nonexisting_round(self, client):
-        vote = dict(round="1", name='voter', number=2)
+        vote = dict(round_id=1, name='voter', number=2)
         rv = client.post(self.URL, json=vote)
         assert rv.status_code == HTTPStatus.NOT_FOUND
 
     def test_voting_on_completed_round(self, client):
         round = _make_completed_round(1)
 
-        vote = dict(round=f"{round.id}", name='voter', number=2)
+        vote = dict(round_id=round.id, name='voter', number=2)
         rv = client.post(self.URL, json=vote)
         assert rv.status_code == HTTPStatus.CONFLICT
 
     def test_duplicate_vote(self, client):
         round = game.make_round()
-        vote = dict(round=str(round.id), name='voter', number=2)
+        vote = dict(round_id=round.id, name='voter', number=2)
 
         rv = client.post(self.URL, json=vote)
         assert rv.status_code == HTTPStatus.OK
@@ -192,12 +192,11 @@ class Test_post_v1_votes:
 
 
 @pytest.fixture
-def round_id_1(db):
-    """ Create an active round with id 1 """
+def active_round(db):
+    """ Create an active round """
     round = game.make_round()
-    round.id = 1
     db.session.flush()
-    return 1
+    return round
 
 
 class Test_v1_rounds_roundid_is_completed:
@@ -206,41 +205,32 @@ class Test_v1_rounds_roundid_is_completed:
     def url(self, round_id):
         return f'/v1/rounds/{round_id}/is_completed'
 
-    @pytest.mark.parametrize("round_id", ["current", "1"])
-    def test_put_True_completes_round(self, client, round_id, round_id_1):
-        assert game.get_current_round_id() == 1
-
-        rv = client.put(self.url(round_id), json=True)
+    def test_put_True_completes_round(self, client, active_round):
+        rv = client.put(self.url(active_round.id), json=True)
         assert rv.status_code == HTTPStatus.NO_CONTENT
 
         with pytest.raises(LookupError):
             game.get_current_round_id()
 
-    @pytest.mark.parametrize("round_id", ["current", "1"])
-    def test_put_False_succeeds_on_active_round(self, client, round_id, round_id_1):
-        rv = client.put(self.url(round_id), json=False)
+    def test_put_False_succeeds_on_active_round(self, client, active_round):
+        rv = client.put(self.url(active_round.id), json=False)
 
         assert rv.status_code == HTTPStatus.NO_CONTENT
         assert game.get_current_round_id() == 1
 
-    def test_put_False_fails_on_completed_round(self, client, round_id_1):
-        game.complete_round(game.get_round(round_id_1))
+    def test_put_False_fails_on_completed_round(self, client, active_round):
+        game.complete_round(active_round)
 
-        rv = client.put(self.url(round_id_1), json=False)
+        rv = client.put(self.url(active_round.id), json=False)
 
         assert rv.status_code == HTTPStatus.CONFLICT
 
-    def test_put_True_on_non_active_round(self, client, round_id_1):
-        game.complete_round(game.get_round(round_id_1))
+    def test_put_True_on_non_active_round(self, client, active_round):
+        game.complete_round(active_round)
 
-        rv = client.put(self.url(round_id_1), json=True)
+        rv = client.put(self.url(active_round.id), json=True)
 
         assert rv.status_code == HTTPStatus.NO_CONTENT
-
-    def test_put_with_current_when_no_active_round(self, client):
-        rv = client.put(self.url("current"), json=True)
-
-        assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
 class Test_get_v1_rounds_current_id:
@@ -259,18 +249,8 @@ class Test_get_v1_rounds_current_id:
         assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
-def test_get_v1_rounds_current_result(client):
-    rv = client.get('/v1/rounds/current/result')
-    assert rv.status_code == HTTPStatus.OK
-
-
 def test_get_v1_rounds_1_result(client):
     rv = client.get('/v1/rounds/1/result')
-    assert rv.status_code == HTTPStatus.OK
-
-
-def test_get_v1_rounds_current(client):
-    rv = client.get('/v1/rounds/current')
     assert rv.status_code == HTTPStatus.OK
 
 
@@ -299,7 +279,7 @@ class Test_v1_persistence:
         assert not db.session.query(Round).get(round_id).is_completed
 
         with flask_app.test_client() as client:
-            rv = client.put('/v1/rounds/current/is_completed', json=True)
+            rv = client.put(f'/v1/rounds/{round_id}/is_completed', json=True)
             assert rv.status_code == HTTPStatus.NO_CONTENT
 
         db.session.rollback()
@@ -313,7 +293,7 @@ class Test_v1_persistence:
 
         db.session.rollback()
 
-        vote = {'name': 'test', 'number': 314, 'round': str(round_id)}
+        vote = {'name': 'test', 'number': 314, 'round_id': round_id}
         with flask_app.test_client() as client:
             rv = client.post('/v1/votes', json=vote)
             assert rv.status_code == HTTPStatus.OK

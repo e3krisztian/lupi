@@ -92,10 +92,10 @@ Class | Method | HTTP request | Description
 *GameApi* | [**add_vote**](docs/GameApi.md#add_vote) | **POST** /votes | 
 *GameApi* | [**create_round**](docs/GameApi.md#create_round) | **POST** /rounds | 
 *GameApi* | [**get_current_round_id**](docs/GameApi.md#get_current_round_id) | **GET** /rounds/current/id | 
-*GameApi* | [**get_round_result**](docs/GameApi.md#get_round_result) | **GET** /rounds/{round}/result | 
-*GameApi* | [**set_round_completed**](docs/GameApi.md#set_round_completed) | **PUT** /rounds/{round}/is_completed | 
-*StatsApi* | [**get_round**](docs/StatsApi.md#get_round) | **GET** /rounds/{round} | 
-*StatsApi* | [**get_round_result**](docs/StatsApi.md#get_round_result) | **GET** /rounds/{round}/result | 
+*GameApi* | [**get_round_result**](docs/GameApi.md#get_round_result) | **GET** /rounds/{round_id}/result | 
+*GameApi* | [**set_round_completed**](docs/GameApi.md#set_round_completed) | **PUT** /rounds/{round_id}/is_completed | 
+*StatsApi* | [**get_round**](docs/StatsApi.md#get_round) | **GET** /rounds/{round_id} | 
+*StatsApi* | [**get_round_result**](docs/StatsApi.md#get_round_result) | **GET** /rounds/{round_id}/result | 
 *StatsApi* | [**get_rounds**](docs/StatsApi.md#get_rounds) | **GET** /rounds | 
 
 

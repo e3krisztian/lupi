@@ -97,9 +97,9 @@ paths:
         404:
           description: Round is not available
 
-  /rounds/{round}/is_completed:
+  /rounds/{round_id}/is_completed:
     parameters:
-      - $ref: "#/components/parameters/round"
+      - $ref: "#/components/parameters/round_id"
     put:
       tags: [game]
       description: Completes a round, calculates winner
@@ -143,9 +143,9 @@ paths:
         404:
           description: Not started a round yet
 
-  /rounds/{round}/result:
+  /rounds/{round_id}/result:
     parameters:
-      - $ref: "#/components/parameters/round"
+      - $ref: "#/components/parameters/round_id"
     get:
       tags: [stats, game]
       description: Get round result
@@ -161,9 +161,9 @@ paths:
         404:
           description: Round/its result is not available
 
-  /rounds/{round}:
+  /rounds/{round_id}:
     parameters:
-      - $ref: "#/components/parameters/round"
+      - $ref: "#/components/parameters/round_id"
     get:
       tags: [stats]
       description: Get round details
@@ -181,8 +181,8 @@ paths:
 
 components:
   parameters:
-    round:
-      name: round
+    round_id:
+      name: round_id
       in: path
       required: true
       schema:
@@ -190,18 +190,17 @@ components:
 
   schemas:
     round_id:
-      type: string
-      pattern: "^current|\\d+$"
-      default: current
+      type: integer
+      example: 12
 
     vote:
       type: object
       required:
-        - round
+        - round_id
         - name
         - number
       properties:
-        round:
+        round_id:
           $ref: "#/components/schemas/round_id"
         name:
           type: string
@@ -266,6 +265,11 @@ components:
                   - start_date
                   - end_date
                   - players
+            example:
+              id: 1
+              start_date: 2020-08-01T13:24:50,515819204+00:00
+              end_date: 2020-08-02T13:24:50,515819204+00:00
+              players: 8
         previous:
           type: string
           example: /v1/rounds?before=4

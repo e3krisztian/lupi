@@ -14,7 +14,7 @@ tests/ui: lupi_ui/requirements-tests.txt
 	# ui is tested via live test env
 	docker-compose kill db
 	docker-compose up initdb  # need to wait to exit
-	docker-compose run ui-tests bash -c './wait-for-http game_server:8080 && pytest lupi_ui'
+	docker-compose run ui-tests bash -c './wait-for-http game_server:8080 && pytest'
 
 clean:
 	git clean -fdX # remove only ignored files, directories

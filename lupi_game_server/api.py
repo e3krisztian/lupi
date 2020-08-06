@@ -20,7 +20,7 @@ def create_round():
 
 def add_vote():
     """ POST /v1/votes """
-    round = game.get_round(request.json['round'])
+    round = game.get_round(request.json['round_id'])
     if round is None:
         return None, HTTPStatus.NOT_FOUND
     name = request.json['name']
@@ -32,9 +32,9 @@ def add_vote():
         return None, HTTPStatus.CONFLICT
 
 
-def set_round_completed(round):
-    """ PUT /v1/rounds/{round}/is_completed """
-    requested_round = game.get_round(round)
+def set_round_completed(round_id):
+    """ PUT /v1/rounds/{round_id}/is_completed """
+    requested_round = game.get_round(round_id)
     if requested_round is None:
         return None, HTTPStatus.NOT_FOUND
     do_complete = request.json
@@ -54,9 +54,9 @@ def get_current_round_id():
 
 
 # stats API
-def get_round_result(round):
-    """ GET /v1/rounds/{round}/result """
-    # TODO: GET /v1/rounds/{round}/result
+def get_round_result(round_id):
+    """ GET /v1/rounds/{round_id}/result """
+    # TODO: GET /v1/rounds/{round_id}/result
     print(repr(round))
     return dict(
         is_completed=True,
@@ -65,9 +65,9 @@ def get_round_result(round):
     )
 
 
-def get_round(round):
-    """ GET /v1/rounds/{round} """
-    # TODO: GET /v1/rounds/{round}
+def get_round(round_id):
+    """ GET /v1/rounds/{round_id} """
+    # TODO: GET /v1/rounds/{round_id}
     print(repr(round))
     return dict(
         id=1,

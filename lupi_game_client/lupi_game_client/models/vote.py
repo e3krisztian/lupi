@@ -33,57 +33,54 @@ class Vote(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'round': 'str',
+        'round_id': 'int',
         'name': 'str',
         'number': 'int'
     }
 
     attribute_map = {
-        'round': 'round',
+        'round_id': 'round_id',
         'name': 'name',
         'number': 'number'
     }
 
-    def __init__(self, round='current', name=None, number=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, round_id=None, name=None, number=None, local_vars_configuration=None):  # noqa: E501
         """Vote - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._round = None
+        self._round_id = None
         self._name = None
         self._number = None
         self.discriminator = None
 
-        self.round = round
+        self.round_id = round_id
         self.name = name
         self.number = number
 
     @property
-    def round(self):
-        """Gets the round of this Vote.  # noqa: E501
+    def round_id(self):
+        """Gets the round_id of this Vote.  # noqa: E501
 
 
-        :return: The round of this Vote.  # noqa: E501
-        :rtype: str
+        :return: The round_id of this Vote.  # noqa: E501
+        :rtype: int
         """
-        return self._round
+        return self._round_id
 
-    @round.setter
-    def round(self, round):
-        """Sets the round of this Vote.
+    @round_id.setter
+    def round_id(self, round_id):
+        """Sets the round_id of this Vote.
 
 
-        :param round: The round of this Vote.  # noqa: E501
-        :type round: str
+        :param round_id: The round_id of this Vote.  # noqa: E501
+        :type round_id: int
         """
-        if self.local_vars_configuration.client_side_validation and round is None:  # noqa: E501
-            raise ValueError("Invalid value for `round`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                round is not None and not re.search(r'^current|\d+$', round)):  # noqa: E501
-            raise ValueError(r"Invalid value for `round`, must be a follow pattern or equal to `/^current|\d+$/`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and round_id is None:  # noqa: E501
+            raise ValueError("Invalid value for `round_id`, must not be `None`")  # noqa: E501
 
-        self._round = round
+        self._round_id = round_id
 
     @property
     def name(self):

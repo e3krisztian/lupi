@@ -36,13 +36,13 @@ class TestVote(unittest.TestCase):
         # model = lupi_game_client.models.vote.Vote()  # noqa: E501
         if include_optional :
             return Vote(
-                round = 'current', 
+                round_id = 12, 
                 name = '0', 
                 number = 2
             )
         else :
             return Vote(
-                round = 'current',
+                round_id = 12,
                 name = '0',
                 number = 2,
         )
