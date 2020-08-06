@@ -8,53 +8,61 @@ def test_main_page(client):
     assert client.get('/').status_code == HTTPStatus.OK
 
 
-def assert_has_active_round(game_api):
-    game_api.get_current_round_id()
+def assert_has_active_round(server):
+    server.game.get_current_round_id()
 
 
-def assert_has_no_active_round(game_api):
+def assert_has_no_active_round(server):
     with pytest.raises(lupi_game_client.ApiException):
-        game_api.get_current_round_id()
+        server.game.get_current_round_id()
 
 
 class Test_start_new_round:
-    def test_no_active_round(self, client, game_api, no_active_round, url_for):
-        rv = client.post(url_for('lupi_ui.start_round'), follow_redirects=False)
+    def test_no_active_round(self, webui, client, server, no_active_round):
+        rv = client.post(
+            webui.url_for('lupi_ui.start_round'),
+            follow_redirects=False)
         assert rv.status_code == HTTPStatus.SEE_OTHER
         rv = client.get(rv.headers['Location'])
         assert rv.status_code == HTTPStatus.OK
 
-        assert_has_active_round(game_api)
+        assert_has_active_round(server)
 
-    def test_active_round(self, client, game_api, active_round_id, url_for):
-        rv = client.post(url_for('lupi_ui.start_round'), follow_redirects=False)
+    def test_active_round(self, webui, client, server, active_round_id):
+        rv = client.post(
+            webui.url_for('lupi_ui.start_round'),
+            follow_redirects=False)
         assert rv.status_code == HTTPStatus.SEE_OTHER
         rv = client.get(rv.headers['Location'])
         assert rv.status_code == HTTPStatus.OK
 
-        assert active_round_id == game_api.get_current_round_id()
+        assert active_round_id == server.game.get_current_round_id()
 
 
 class Test_close_round:
-    def test_no_active_round(self, client, game_api, no_active_round, url_for):
-        rv = client.post(url_for('lupi_ui.close_round'), follow_redirects=False)
+    def test_no_active_round(self, webui, client, server, no_active_round):
+        rv = client.post(
+            webui.url_for('lupi_ui.close_round'),
+            follow_redirects=False)
         assert rv.status_code == HTTPStatus.SEE_OTHER
         rv = client.get(rv.headers['Location'])
         assert rv.status_code == HTTPStatus.OK
 
-        assert_has_no_active_round(game_api)
+        assert_has_no_active_round(server)
 
-    def test_active_round(self, client, game_api, active_round_id, url_for):
-        assert active_round_id == game_api.get_current_round_id()
+    def test_active_round(self, webui, client, server, active_round_id):
+        assert active_round_id == server.game.get_current_round_id()
 
-        rv = client.post(url_for('lupi_ui.close_round'), follow_redirects=False)
+        rv = client.post(
+            webui.url_for('lupi_ui.close_round'),
+            follow_redirects=False)
         assert rv.status_code == HTTPStatus.SEE_OTHER
         rv = client.get(rv.headers['Location'])
         assert rv.status_code == HTTPStatus.OK
 
-        assert_has_no_active_round(game_api)
+        assert_has_no_active_round(server)
 
-        game_api.set_round_completed(active_round_id, body=True)
+        server.game.set_round_completed(active_round_id, body=True)
 
         with pytest.raises(lupi_game_client.ApiException):
-            game_api.get_current_round_id()
+            server.game.get_current_round_id()
