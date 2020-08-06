@@ -5,8 +5,13 @@
   <header>
     {% block header %}{% endblock %}
   </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
   {% block content %}{% endblock %}
+  <footer>
+    <hr>
+    {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+    <hr>
+    {% endfor %}
+    {% block footer %}{% endblock %}
+  </footer>
 </section>

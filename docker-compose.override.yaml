@@ -59,3 +59,4 @@ services:
     environment:
       FLASK_SECRET_KEY: N04-50-S3cr#4
       FLASK_ENV: development
+      WTF_CSRF_ENABLED: "False"  # it is very hard to get to the CSRF token in tests

@@ -7,14 +7,21 @@
 {% block content %}
 <h1>Game rules</h1>
 <ul>
-    <li>it is a Multiplayer game</li>
+    <li>it is a multiplayer game</li>
     <li>each player picks a positive integer</li>
     <li>the lowest unique integer wins</li>
 </ul>
 <h1>Play</h1>
-<ul>
-    <li>vote</li>
-</ul>
+<form method="POST" action="{{ url_for('lupi_ui.vote') }}">
+    {{ form.csrf_token }}
+    {% from "_formhelpers.html" import render_field %}
+    <dl>
+        {{ render_field(form.name) }}
+        {{ render_field(form.number) }}
+    </dl>
+    <button type="submit">Vote</button>
+    </ul>
+</form>
 <h1>Admin</h1>
 <ul>
     <li>

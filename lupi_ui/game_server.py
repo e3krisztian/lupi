@@ -15,7 +15,7 @@ from dataclasses import dataclass
 import lupi_game_client
 
 ApiException = lupi_game_client.ApiException
-
+Vote = lupi_game_client.Vote
 
 v1_configuration = lupi_game_client.Configuration(
     host = "http://game_server:8080/v1"
