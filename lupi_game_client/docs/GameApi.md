@@ -7,7 +7,7 @@ Method | HTTP request | Description
 [**add_vote**](GameApi.md#add_vote) | **POST** /votes | 
 [**create_round**](GameApi.md#create_round) | **POST** /rounds | 
 [**get_current_round_id**](GameApi.md#get_current_round_id) | **GET** /rounds/current/id | 
-[**get_round_result**](GameApi.md#get_round_result) | **GET** /rounds/{round_id}/result | 
+[**get_round**](GameApi.md#get_round) | **GET** /rounds/{round_id} | 
 [**set_round_completed**](GameApi.md#set_round_completed) | **PUT** /rounds/{round_id}/is_completed | 
 
 
@@ -189,12 +189,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_round_result**
-> RoundResult get_round_result(round_id)
+# **get_round**
+> RoundDetails get_round(round_id)
 
 
 
-Get round result
+Get round details
 
 ### Example
 
@@ -218,10 +218,10 @@ with lupi_game_client.ApiClient() as api_client:
     round_id = 56 # int | 
 
     try:
-        api_response = api_instance.get_round_result(round_id)
+        api_response = api_instance.get_round(round_id)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling GameApi->get_round_result: %s\n" % e)
+        print("Exception when calling GameApi->get_round: %s\n" % e)
 ```
 
 ### Parameters
@@ -232,7 +232,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**RoundResult**](RoundResult.md)
+[**RoundDetails**](RoundDetails.md)
 
 ### Authorization
 
@@ -246,8 +246,8 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | results |  -  |
-**404** | Round/its result is not available |  -  |
+**200** | Details of round |  -  |
+**404** | Round is not available |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

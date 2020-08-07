@@ -78,7 +78,7 @@ class Test_vote:
         assert rv.status_code == HTTPStatus.SEE_OTHER
         rv = client.get(rv.headers['Location'])
         assert rv.status_code == HTTPStatus.OK
-        assert 'Thank you for your vote' in rv.get_data(as_text=True)
+        assert 'Vote registered' in rv.get_data(as_text=True)
 
     def test_no_name(self, webui, client, server, no_active_round):
         rv = client.post(
@@ -113,7 +113,7 @@ class Test_vote:
             webui.url_for('lupi_ui.vote'),
             data=dict(name='name', number=197),
             follow_redirects=True)
-        assert 'Thank you for your vote' in rv.get_data(as_text=True)
+        assert 'Vote registered' in rv.get_data(as_text=True)
 
         rv = client.post(
             webui.url_for('lupi_ui.vote'),

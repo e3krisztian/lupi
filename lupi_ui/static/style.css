@@ -13,34 +13,34 @@ body {
 
 /* ^^^ */
 
-#history {
+table {
   border-collapse: collapse;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-#history td, #history th {
+td, th {
   padding: 8px;
 }
 
-#history tr:nth-child(even){
+tr:nth-child(even){
   background-color: lightgray
 }
 
-#history tr:hover {
+tr:hover {
   background-color: lightgreen;
 }
 
-#history th {
+th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
   background-color: darkgray;
-  color: lightgray;
+  color: black;
 }
 
-div.flash {
+div.flash.info {
   /* border: thick solid green; */
   padding: 8px;
   background-color: green;

@@ -7,7 +7,7 @@ docs/GameApi.md
 docs/ListOfRounds.md
 docs/Paging.md
 docs/Round.md
-docs/RoundResult.md
+docs/RoundDetails.md
 docs/StatsApi.md
 docs/Vote.md
 git_push.sh
@@ -22,7 +22,7 @@ lupi_game_client/models/__init__.py
 lupi_game_client/models/list_of_rounds.py
 lupi_game_client/models/paging.py
 lupi_game_client/models/round.py
-lupi_game_client/models/round_result.py
+lupi_game_client/models/round_details.py
 lupi_game_client/models/vote.py
 lupi_game_client/rest.py
 requirements.txt
@@ -34,7 +34,7 @@ test/test_game_api.py
 test/test_list_of_rounds.py
 test/test_paging.py
 test/test_round.py
-test/test_round_result.py
+test/test_round_details.py
 test/test_stats_api.py
 test/test_vote.py
 tox.ini

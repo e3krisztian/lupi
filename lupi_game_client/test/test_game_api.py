@@ -46,8 +46,8 @@ class TestGameApi(unittest.TestCase):
         """
         pass
 
-    def test_get_round_result(self):
-        """Test case for get_round_result
+    def test_get_round(self):
+        """Test case for get_round
 
         """
         pass

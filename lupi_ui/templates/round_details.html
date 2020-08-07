@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Round {{ round_details.id }}{% endblock %}
+
+{% block content %}
+<h1>Game round {{ round_details.id }}</h1>
+{% if round_details.is_completed %}
+{% if round_details.winner %}
+<p>
+    The winner of this round is: <em><b>{{ round_details.winner }}</b></em>
+    with unique number: <em><b>{{ round_details.vote }}</b></em>.
+</p>
+{% else %}
+<p>
+    Round is completed without an unique number - there was no winner in this round.
+</p>
+{% endif %}
+<p>
+    There were <em><b>{{ round_details.players }}</b></em> players in this round.
+</p>
+{% else %}
+<p>
+This is an ongoing round, there are no results yet.
+</p>
+{% endif %}
+<table>
+    <tbody>
+        <tr>
+            <th>Start date</th>
+            <th>End date</th>
+        </tr>
+        <tr>
+            <td>{{ round_details.start_date }}</td>
+            {% if round_details.is_completed %}
+            <td>{{ round_details.end_date }}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

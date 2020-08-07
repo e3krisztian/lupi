@@ -17,5 +17,5 @@ from __future__ import absolute_import
 from lupi_game_client.models.list_of_rounds import ListOfRounds
 from lupi_game_client.models.paging import Paging
 from lupi_game_client.models.round import Round
-from lupi_game_client.models.round_result import RoundResult
+from lupi_game_client.models.round_details import RoundDetails
 from lupi_game_client.models.vote import Vote

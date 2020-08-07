@@ -3,7 +3,6 @@
 from http import HTTPStatus
 
 from flask import request
-import flask
 from . import game
 from . import stats
 

@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import lupi_game_client
-from lupi_game_client.models.round_result import RoundResult  # noqa: E501
+from lupi_game_client.models.round_details import RoundDetails  # noqa: E501
 from lupi_game_client.rest import ApiException
 
-class TestRoundResult(unittest.TestCase):
-    """RoundResult unit test stubs"""
+class TestRoundDetails(unittest.TestCase):
+    """RoundDetails unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,24 +29,30 @@ class TestRoundResult(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test RoundResult
+        """Test RoundDetails
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = lupi_game_client.models.round_result.RoundResult()  # noqa: E501
+        # model = lupi_game_client.models.round_details.RoundDetails()  # noqa: E501
         if include_optional :
-            return RoundResult(
+            return RoundDetails(
+                id = 56, 
+                start_date = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
+                end_date = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
+                players = 0, 
                 is_completed = True, 
-                winner = 'winning-user', 
+                winner = 'the one who votes smallest', 
                 vote = 2
             )
         else :
-            return RoundResult(
+            return RoundDetails(
+                id = 56,
+                start_date = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 is_completed = True,
         )
 
-    def testRoundResult(self):
-        """Test RoundResult"""
+    def testRoundDetails(self):
+        """Test RoundDetails"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 
