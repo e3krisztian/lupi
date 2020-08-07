@@ -53,29 +53,33 @@ def get_current_round_id():
         return None, HTTPStatus.NOT_FOUND
 
 
-# stats API
-def get_round_result(round_id):
-    """ GET /v1/rounds/{round_id}/result """
-    # TODO: GET /v1/rounds/{round_id}/result
-    print(repr(round))
-    return dict(
-        is_completed=True,
-        winner='winning-user',
-        vote=1,
-    )
-
-
 def get_round(round_id):
     """ GET /v1/rounds/{round_id} """
-    # TODO: GET /v1/rounds/{round_id}
-    print(repr(round))
-    return dict(
-        id=1,
-        start_date='2020-07-30T17:40:40.123123Z',
-        end_date='2020-07-30T17:45:40.123123Z',
-        is_completed=True,
-        players=8,
+    round = game.get_round(round_id)
+    if round is None:
+        return None, HTTPStatus.NOT_FOUND
+
+    result = dict(
+        id=round.id,
+        start_date=round.start_date.isoformat(timespec='microseconds'),
+        is_completed=round.is_completed,
     )
+    if round.is_completed:
+        result.update(
+            dict(
+                end_date=round.end_date.isoformat(timespec='microseconds'),
+                players=len(round.votes),
+            )
+        )
+        winner_vote = round.get_winner()
+        if winner_vote:
+            result.update(
+                dict(
+                    winner=winner_vote.name,
+                    vote=winner_vote.number
+                )
+            )
+    return result
 
 
 def get_rounds(before=None, page_size=25):

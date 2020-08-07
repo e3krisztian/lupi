@@ -140,29 +140,11 @@ paths:
         404:
           description: Not started a round yet
 
-  /rounds/{round_id}/result:
-    parameters:
-      - $ref: "#/components/parameters/round_id"
-    get:
-      tags: [stats, game]
-      description: Get round result
-      x-openapi-router-controller: lupi_game_server.api
-      operationId: get_round_result
-      responses:
-        200:
-          description: results
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/round_result"
-        404:
-          description: Round/its result is not available
-
   /rounds/{round_id}:
     parameters:
       - $ref: "#/components/parameters/round_id"
     get:
-      tags: [stats]
+      tags: [stats, game]
       description: Get round details
       x-openapi-router-controller: lupi_game_server.api
       operationId: get_round
@@ -172,7 +154,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/round"
+                $ref: "#/components/schemas/round_details"
         404:
           description: Round is not available
 
@@ -232,16 +214,29 @@ components:
           type: integer
           minimum: 0
 
-    round_result:
+    round_details:
       type: object
       required:
+        - id
+        - start_date
         - is_completed
       properties:
+        id:
+          type: integer
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        players:
+          type: integer
+          minimum: 0
         is_completed:
           type: boolean
         winner:
           type: string
-          example: winning-user
+          example: the one who votes smallest
         vote:
           $ref: "#/components/schemas/voted_number"
 

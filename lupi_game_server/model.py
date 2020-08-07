@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -13,6 +14,14 @@ class Round(db.Model):
     @property
     def is_completed(self):
         return self.end_date is not None
+
+    def get_winner(self):
+        collector = defaultdict(list)
+        for vote in self.votes:
+            collector[vote.number].append(vote)
+        for number, votes in sorted(collector.items()):
+            if len(votes) == 1:
+                return votes[0]
 
 
 class Vote(db.Model):

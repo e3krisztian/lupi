@@ -3,6 +3,7 @@ Statistics and other info about past games.
 """
 
 from datetime import datetime
+from lupi_game_server.test_api import _end_date
 from typing import List
 
 from sqlalchemy.orm.query import Query

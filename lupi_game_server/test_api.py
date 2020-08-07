@@ -199,7 +199,7 @@ def active_round(db):
     return round
 
 
-class Test_v1_rounds_roundid_is_completed:
+class Test_put_v1_rounds_roundid_is_completed:
     """ This endpoint closes a round """
 
     def url(self, round_id):
@@ -249,14 +249,114 @@ class Test_get_v1_rounds_current_id:
         assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
-def test_get_v1_rounds_1_result(client):
-    rv = client.get('/v1/rounds/1/result')
+def test_get_v1_rounds_active_round(client):
+    round = game.make_round()
+    game.add_vote(round, "king of numbers", 1)
+
+    rv = client.get(f'/v1/rounds/{round.id}')
     assert rv.status_code == HTTPStatus.OK
+    assert "winner" not in rv.json
+    assert not rv.json["is_completed"]
 
 
-def test_get_v1_rounds_1(client):
-    rv = client.get('/v1/rounds/1')
-    assert rv.status_code == HTTPStatus.OK
+class Test_get_v1_rounds_round:
+    def assert_round_json_equals(self, round, result, expected):
+        __tracebackhide__ = True
+        result = {**result}
+        expected = {**expected}
+
+        def drop_date_if_equal(key):
+            if key in result:
+                assert key in expected
+                assert datetime_eq(expected[key], result[key])
+                del result[key]
+                del expected[key]
+            else:
+                assert key not in expected
+        drop_date_if_equal("start_date")
+        drop_date_if_equal("end_date")
+        assert result == expected
+
+    def test_active(self, client):
+        round = game.make_round()
+
+        rv = client.get(f'/v1/rounds/{round.id}')
+        assert rv.status_code == HTTPStatus.OK
+        self.assert_round_json_equals(
+            round,
+            rv.json,
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                is_completed=False
+            )
+        )
+
+    def test_completed_has_winner(self, client):
+        round = game.make_round()
+        game.add_vote(round, 'name', 1)
+        game.complete_round(round)
+
+        rv = client.get(f'/v1/rounds/{round.id}')
+        assert rv.status_code == HTTPStatus.OK
+        self.assert_round_json_equals(
+            round,
+            rv.json,
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                end_date=round.end_date,
+                is_completed=True,
+                players=1,
+                winner="name",
+                vote=1,
+            )
+        )
+
+    def test_completed_no_players(self, client):
+        round = game.make_round()
+        game.complete_round(round)
+
+        rv = client.get(f'/v1/rounds/{round.id}')
+        assert rv.status_code == HTTPStatus.OK
+        self.assert_round_json_equals(
+            round,
+            rv.json,
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                end_date=round.end_date,
+                is_completed=True,
+                players=0,
+            )
+        )
+
+    def test_completed_no_winner(self, client):
+        round = game.make_round()
+        game.add_vote(round, 'name1', 1)
+        game.add_vote(round, 'name2', 1)
+        game.complete_round(round)
+
+        rv = client.get(f'/v1/rounds/{round.id}')
+        assert rv.status_code == HTTPStatus.OK
+        self.assert_round_json_equals(
+            round,
+            rv.json,
+            dict(
+                id=round.id,
+                start_date=round.start_date,
+                end_date=round.end_date,
+                is_completed=True,
+                players=2,
+            )
+        )
+
+    def test_invalid_round_id(self, client):
+        round = game.make_round()
+
+        # db is autoincrement
+        rv = client.get(f'/v1/rounds/{round.id + 1}')
+        assert rv.status_code == HTTPStatus.NOT_FOUND
 
 
 def datetime_eq(datetime1, datetime2):
