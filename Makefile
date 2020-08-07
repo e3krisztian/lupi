@@ -25,6 +25,10 @@ build: clean lupi_game_client lupi_game_server/requirements.txt lupi_ui/requirem
 initdb:
 	docker-compose run --rm game_server bash -c './wait-for-postgres db && python -m lupi_game_server.create_db'
 
+info:
+	# Show [internal] IP-s for the containers
+	docker-compose run --rm info
+
 shell/db:
 	# sql console for an interactive look around
 	docker-compose exec db psql -d lupi -U lupi
