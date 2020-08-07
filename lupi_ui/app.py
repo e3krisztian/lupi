@@ -2,9 +2,10 @@ from http import HTTPStatus
 import os
 
 import flask
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, request
 from flask.templating import render_template
 from flask_wtf import FlaskForm
+import flask_table
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, NumberRange
 from . import game_server
@@ -82,6 +83,52 @@ def close_round():
         except game_server.ApiException:
             flash(f'There is no active round')
         return redirect(url_for('lupi_ui.index'), HTTPStatus.SEE_OTHER)
+
+
+class HistoryTable(flask_table.Table):
+    id = flask_table.LinkCol(
+        "Round ID",
+        "lupi_ui.round",
+        attr_list=['id'],
+        url_kwargs=dict(round_id='id')
+    )
+    start_date = flask_table.Col("Start date")
+    end_date = flask_table.Col("End date")
+    players = flask_table.Col("# players")
+
+
+@ui.route('/history')
+def rounds_history():
+    page_size = int(request.args.get('page_size', "25"))
+    with game_server.open() as server:
+        try:
+            before = int(request.args['before'])
+            if before < 1:
+                raise ValueError
+            paged_rounds = server.stats.get_rounds(
+                before=before,
+                page_size=page_size
+            )
+        except (KeyError, ValueError):
+            paged_rounds = server.stats.get_rounds(page_size=page_size)
+
+    if paged_rounds.previous:
+        previous = url_for(
+            "lupi_ui.rounds_history",
+            **paged_rounds.previous.to_dict()
+        )
+    else:
+        previous = None
+
+    return render_template(
+        'history.html',
+        history_table=HistoryTable(paged_rounds.data, table_id="history"),
+        previous=previous)
+
+
+@ui.route('/round/<int:round_id>')
+def round(round_id):
+    return f'round {round_id}'
 
 
 def create_app():

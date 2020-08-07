@@ -11,6 +11,7 @@ flask = "^1.1.2"
 gunicorn = "^20.0.4"
 lupi-game-client = {path = "../lupi_game_client"}
 Flask-WTF = "^0.14.3"
+Flask-Table = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.3"

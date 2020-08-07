@@ -1,7 +1,5 @@
 from http import HTTPStatus
 
-from flask_wtf import csrf
-
 import lupi_game_client
 import pytest
 

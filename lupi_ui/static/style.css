@@ -1,0 +1,67 @@
+/* https://stackoverflow.com/a/57032622 */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  display: grid;
+  background-color: antiquewhite;
+  height: 100vh;
+  place-items: center;
+}
+
+/* ^^^ */
+
+#history {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#history td, #history th {
+  padding: 8px;
+}
+
+#history tr:nth-child(even){
+  background-color: lightgray
+}
+
+#history tr:hover {
+  background-color: lightgreen;
+}
+
+#history th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: darkgray;
+  color: lightgray;
+}
+
+div.flash {
+  /* border: thick solid green; */
+  padding: 8px;
+  background-color: green;
+  color: antiquewhite;
+}
+
+div.flash.error {
+  border: thick solid red;
+  padding: 5px;
+}
+
+.form_field_errors {
+  border: thick solid red;
+  min-width: 60%;
+}
+
+form >button {
+  min-width: 30em;
+  color: brown ;
+}
+
+form input {
+  min-width: 16em;
+}

@@ -2,8 +2,6 @@
 
 {% block title %}Least Unique Positive Integer Game{% endblock %}
 
-{% block header %}{% endblock %}
-
 {% block content %}
 <h1>Game rules</h1>
 <ul>
@@ -32,6 +30,6 @@
 </form>
 <h1>Statistics/Info</h1>
 <ul>
-    <li>previous rounds</li>
+    <li><a href="{{ url_for("lupi_ui.rounds_history") }}">previous rounds</a></li>
 </ul>
 {% endblock %}

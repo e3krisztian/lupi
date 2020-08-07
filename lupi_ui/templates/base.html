@@ -8,8 +8,8 @@
   {% block content %}{% endblock %}
   <footer>
     <hr>
-    {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="flash {{ category}}">{{ message }}</div>
     <hr>
     {% endfor %}
     {% block footer %}{% endblock %}
