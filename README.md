@@ -33,19 +33,19 @@ Main starting points for looking into the source:
 
 #### [`Makefile`](Makefile)
 
-Command center.
+Command center, see below for what it can be used for.
 
 
 #### `lupi_game_server`
 
 - [`openapi.yaml`](lupi_game_server/openapi.yaml) is the [OpenAPI](https://swagger.io/specification/) description of the RESTful API for the game (also source of the generated `lupi_game_client`)
-- `api.py` implements the REST API defined in the above `yaml` file
+- [`api.py`](lupi_game_server/api.py) implements the REST API defined in the above `yaml` file
 - [`model.py`](lupi_game_server/model.py) is the very simple database model
-- `game.py` and `stats.py` implements the `db` access and game logic
+- [`game.py`](lupi_game_server/game.py) and [`stats.py`](lupi_game_server/stats.py) implements the `db` access and game logic
 
-`lupi_game_server` uses `connexion/swagger-ui`, it gives a working UI and documentation for the live API (documentation/structure can also be viewed by pasting the `openapi.yaml` file to https://editor.swagger.io/).
+`lupi_game_server` uses `connexion[swagger-ui]`, it gives a working UI and documentation for the live API (documentation/structure can also be viewed by pasting the `openapi.yaml` file to https://editor.swagger.io/).
 
-`make info` or `docker-compose run info` gives an URL for the swagger UI:
+`make info` or `docker-compose run info` gives an URL for the swagger UI (`game_server API:   http://192.168.16.3:8080/v1/ui`):
 ```
 $  docker-compose run --rm info
 Starting lupi_db_1 ... done
@@ -80,6 +80,15 @@ The tests of this component is more like an integration test - the entire system
 - text editor: [VS Code](https://code.visualstudio.com/)
 - code generation: [OpenAPI Generator](https://openapi-generator.tech/docs/installation/#docker)
 - database: [PostgreSQL](https://www.postgresql.org/)
+
+
+## Python libs
+
+- Flask
+- Flask-SQLAlchemy
+- Flask-WTF
+- Flask-Table
+- connexion[swagger-ui]
 
 
 ## Building the containers
